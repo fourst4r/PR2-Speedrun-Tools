@@ -371,6 +371,7 @@ namespace PR2_Speedrun_Tools
                     Vanish();
             }
         }
+
         public void Bump(LocalCharacter tChar)
         {
             int BlocX = X * 30;

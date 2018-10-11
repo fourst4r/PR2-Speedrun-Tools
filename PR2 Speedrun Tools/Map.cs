@@ -315,13 +315,23 @@ namespace PR2_Speedrun_Tools
 
             // Timer
             string timeStr;
+            Brush timeColor = Brushes.White;
             if (max_time == 0)
+            {
                 timeStr = General.FramesToTime(Frames);
+            }
             else
-                timeStr = General.FramesToTime((max_time * 27) - Frames);
+            {
+                var framesLeft = (max_time * 27) - Frames;
+                timeStr = General.FramesToTime(framesLeft);
+
+                var secsLeft = framesLeft / 27;
+                if (secsLeft < 30)
+                    timeColor = Brushes.Red;
+            }
             int dX = Image.Width - 7 - (int)MG.MeasureString(timeStr, timeFont).Width;
             BlBit.FillRectangleA(Color.FromArgb(96, 0, 0, 0), dX - 2, 3, Image.Width - dX - 8, 22);
-            MG.DrawString(timeStr, timeFont, Brushes.White, dX - 2, 4);
+            MG.DrawString(timeStr, timeFont, timeColor, dX - 2, 4);
             // Frames
             timeStr = "(" + Frames + ")";
             dX = Image.Width - 7 - (int)MG.MeasureString(timeStr, timeFont).Width;
