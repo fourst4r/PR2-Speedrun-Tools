@@ -395,7 +395,7 @@ namespace PR2_Speedrun_Tools
 				DisplayInfos();
 				btnPlay.Text = "Stop Level";
 				game.paused = true;
-			}
+            }
 			else
 			{
 				theMap.enterLE();
@@ -632,10 +632,70 @@ namespace PR2_Speedrun_Tools
 				You.X = theMap.CamX + e.X;
 				You.Y = theMap.CamY + e.Y;
 			}
-		}
+            else if (tabControl1.SelectedTab == tabLE && theMap.inLE && listViewBlocks.SelectedIndices.Count != 0)
+            {
+                var x = (int)Math.Floor((e.X + theMap.CamX) / 30.0);
+                var y = (int)Math.Floor((e.Y + theMap.CamY) / 30.0);
+                var t = listViewBlocks.SelectedIndices[0];
 
-		// Hat sets
-		private void chkHats_CheckedChanged(object sender, EventArgs e)
+                if (e.Button == MouseButtons.Right)
+                {
+                    if (theMap.getBlock(x, y, 0).T != 99)
+                        theMap.DeleteBlock(x, y);
+                }
+                else if (e.Button == MouseButtons.Left)
+                {
+                    if (theMap.getBlock(x, y, 0).T == 99)
+                        theMap.AddBlock(x, y, t);
+                    else if (theMap.getBlock(x, y, 0).T != t)
+                    {
+                        theMap.DeleteBlock(x, y);
+                        theMap.AddBlock(x, y, t);
+                    }
+                }
+            }
+        }
+
+        private void pnlGame_MouseMove(object sender, MouseEventArgs e)
+        {
+            // for drag-placing blocks in LE mode
+            if (tabControl1.SelectedTab == tabLE && theMap.inLE)
+            {
+                if (e.Button == MouseButtons.Left && listViewBlocks.SelectedIndices.Count != 0)
+                {
+                    var x = (int)Math.Floor((e.X + theMap.CamX) / 30.0);
+                    var y = (int)Math.Floor((e.Y + theMap.CamY) / 30.0);
+                    var t = listViewBlocks.SelectedIndices[0];
+                    LE_Add(x, y, t);
+                }
+                else if (e.Button == MouseButtons.Right)
+                {
+                    var x = (int)Math.Floor((e.X + theMap.CamX) / 30.0);
+                    var y = (int)Math.Floor((e.Y + theMap.CamY) / 30.0);
+                    LE_Delete(x, y);
+                }
+            }
+        }
+
+        private void LE_Add(int x, int y, int t)
+        {
+            if (theMap.getBlock(x, y, 0).T == 99)
+                theMap.AddBlock(x, y, t);
+            else if (theMap.getBlock(x, y, 0).T != t)
+            {
+                theMap.DeleteBlock(x, y);
+                theMap.AddBlock(x, y, t);
+            }
+        }
+
+        private void LE_Delete(int x, int y)
+        {
+            if (theMap.getBlock(x, y, 0).T != 99)
+                theMap.DeleteBlock(x, y);
+        }
+
+        // Hat sets
+        private void chkHats_CheckedChanged(object sender, EventArgs e)
 		{
 			if (!manual)
 				return;
