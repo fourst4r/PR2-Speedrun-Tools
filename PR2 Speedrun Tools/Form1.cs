@@ -1108,5 +1108,13 @@ namespace PR2_Speedrun_Tools
 				theMap.hasPass = false;
 			}
 		}
-	}
+
+        private void levelsList_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (levelsList.SelectedIndex == -1)
+                return;
+
+            loadLevelBtn_Click(null, null);
+        }
+    }
 }

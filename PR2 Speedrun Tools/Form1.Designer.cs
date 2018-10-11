@@ -441,6 +441,7 @@
             this.levelsList.Size = new System.Drawing.Size(180, 95);
             this.levelsList.TabIndex = 1;
             this.levelsList.SelectedIndexChanged += new System.EventHandler(this.levelsList_SelectedIndexChanged);
+            this.levelsList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.levelsList_MouseDoubleClick);
             // 
             // btnLoadLevel
             // 
