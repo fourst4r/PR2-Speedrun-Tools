@@ -819,7 +819,7 @@ namespace PR2_Speedrun_Tools
 						Levels[i].Version = int.Parse(value);
 						break;
 					case "title":
-						Levels[i].Title = value;
+                        Levels[i].Title = WebUtility.UrlDecode(value);
 						break;
 					case "rating":
 						Levels[i].Rating = double.Parse(value.Replace(".", ","), System.Globalization.NumberStyles.Any);
@@ -831,8 +831,8 @@ namespace PR2_Speedrun_Tools
 						Levels[i].MinRank = int.Parse(value);
 						break;
 					case "userName":
-						Levels[i].User = value;
-						break;
+						Levels[i].User = WebUtility.UrlDecode(value);
+                        break;
 					case "pass":
 						Levels[i].HasPassword = value != "";
 						break;
@@ -840,7 +840,7 @@ namespace PR2_Speedrun_Tools
 						Levels[i].Type = value;
 						break;
 					case "note":
-						Levels[i].Note = value;
+						Levels[i].Note = WebUtility.UrlDecode(value);
 						break;
 				}
 			} while (true);
