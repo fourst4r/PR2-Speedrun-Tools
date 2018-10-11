@@ -8,6 +8,8 @@ To create a video you'll have to use an external program to convert a series of 
 
 Original thread: http://forums.acidch.at/showthread.php?tid=1653
 
+Note: I'm not Suuper, I am just maintaining his project.
+
 ## Hotkeys
 - <kbd>ESC</kbd> - deselect whatever
 - <kbd>A</kbd> - (un)pause

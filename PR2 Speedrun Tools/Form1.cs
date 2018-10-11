@@ -47,6 +47,7 @@ namespace PR2_Speedrun_Tools
 		public Form1()
 		{
 			InitializeComponent();
+            this.Text = "PR2 Speedrun Tools v" + Application.ProductVersion;
 		}
 		private void ResetPaths()
 		{
@@ -153,6 +154,7 @@ namespace PR2_Speedrun_Tools
 			}
 		}
 		#endregion
+
 		private void DisplayInfos()
 		{
 			lblVelX.Text = "VelX: " + General.FormatNumber(Math.Round(You.velX, 2), 2);
