@@ -767,10 +767,8 @@ namespace PR2_Speedrun_Tools
 			string SD = "search_str=" + searchBox.Text + "&mode=" + (modeBox.Text == "Level Title" ? "title" : "user") +
 				"&order=" + orderBox.Text.ToLower() + "&dir=" + (ascBox.Checked ? "asc" : "desc") +
 				"&page=" + pageNum.Value;
-			string Lnk = "http://pr2hub.com/search_levels.php?" + SD;
-
-
-			string Lvls = LoadURL(Lnk);
+            string Lnk = "http://pr2hub.com/search_levels.php?";
+			string Lvls = PostLoad(Lnk, SD);
 			DisplayLevels(Lvls);
 		}
 		private void myLevelsButton_Click(object sender, EventArgs e)
