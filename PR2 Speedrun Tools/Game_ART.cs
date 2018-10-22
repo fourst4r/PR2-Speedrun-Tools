@@ -21,9 +21,11 @@ namespace PR2_Speedrun_Tools
 			img.Dispose(); img = null;
 			map.Dispose(); map = null;
 			Players.Clear(); Players = null;
+            MG.Dispose(); MG = null;
 			recording = null;
 		}
 		#endregion
+
 		public Game_ART(int displayWidth = 540, int displayHeight = 405)
 		{
 			img = new Bitsmap(displayWidth, displayHeight);
@@ -135,6 +137,7 @@ namespace PR2_Speedrun_Tools
 			gameTimer.Enabled = false;
 			StartFrames();
 		}
+
 		private void StartFrames()
 		{
 			Stopwatch t = new Stopwatch();
@@ -169,6 +172,7 @@ namespace PR2_Speedrun_Tools
 			} while (!disposedValue && !paused); // IT NEVAR ENDS!
 		}
 		#endregion
+
 		private void goFrame()
 		{
 			InvokeEvent(beginFrame);

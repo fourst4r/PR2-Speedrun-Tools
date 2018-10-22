@@ -519,7 +519,7 @@ namespace PR2_Speedrun_Tools
                 if (!Used[tChar.playerID])
                 {
                     Used[tChar.playerID] = true;
-                    tChar.HurtTimer = 27 * 5; // TODO: Verify time.
+                    tChar.HurtTimer = 27 * 5; // should use current frame rate, not 27
                     tChar.Invincible = true;
                 }
             }

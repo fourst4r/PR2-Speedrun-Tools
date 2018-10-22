@@ -184,7 +184,7 @@ namespace PR2_Speedrun_Tools
 			OpenFileDialog dialog = new OpenFileDialog();
 			dialog.InitialDirectory = LevelsPath;
 
-			if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
+			if (dialog.ShowDialog() == DialogResult.Cancel)
 				return;
 
 			theMap.enterLE(); // Idk what happens if you try to load a level mid-game
@@ -632,66 +632,38 @@ namespace PR2_Speedrun_Tools
 				You.X = theMap.CamX + e.X;
 				You.Y = theMap.CamY + e.Y;
 			}
-            else if (tabControl1.SelectedTab == tabLE && theMap.inLE && listViewBlocks.SelectedIndices.Count != 0)
-            {
-                var x = (int)Math.Floor((e.X + theMap.CamX) / 30.0);
-                var y = (int)Math.Floor((e.Y + theMap.CamY) / 30.0);
-                var t = listViewBlocks.SelectedIndices[0];
-
-                if (e.Button == MouseButtons.Right)
-                {
-                    if (theMap.getBlock(x, y, 0).T != 99)
-                        theMap.DeleteBlock(x, y);
-                }
-                else if (e.Button == MouseButtons.Left)
-                {
-                    if (theMap.getBlock(x, y, 0).T == 99)
-                        theMap.AddBlock(x, y, t);
-                    else if (theMap.getBlock(x, y, 0).T != t)
-                    {
-                        theMap.DeleteBlock(x, y);
-                        theMap.AddBlock(x, y, t);
-                    }
-                }
-            }
+            else if (tabControl1.SelectedTab == tabLE && theMap.inLE)
+                LE_Action(e);
         }
 
         private void pnlGame_MouseMove(object sender, MouseEventArgs e)
         {
-            // for drag-placing blocks in LE mode
             if (tabControl1.SelectedTab == tabLE && theMap.inLE)
-            {
-                if (e.Button == MouseButtons.Left && listViewBlocks.SelectedIndices.Count != 0)
-                {
-                    var x = (int)Math.Floor((e.X + theMap.CamX) / 30.0);
-                    var y = (int)Math.Floor((e.Y + theMap.CamY) / 30.0);
-                    var t = listViewBlocks.SelectedIndices[0];
-                    LE_Add(x, y, t);
-                }
-                else if (e.Button == MouseButtons.Right)
-                {
-                    var x = (int)Math.Floor((e.X + theMap.CamX) / 30.0);
-                    var y = (int)Math.Floor((e.Y + theMap.CamY) / 30.0);
-                    LE_Delete(x, y);
-                }
-            }
+                LE_Action(e);
         }
 
-        private void LE_Add(int x, int y, int t)
+        private void LE_Action(MouseEventArgs e)
         {
-            if (theMap.getBlock(x, y, 0).T == 99)
-                theMap.AddBlock(x, y, t);
-            else if (theMap.getBlock(x, y, 0).T != t)
+            if (e.Button == MouseButtons.Left && listViewBlocks.SelectedIndices.Count != 0)
             {
-                theMap.DeleteBlock(x, y);
-                theMap.AddBlock(x, y, t);
+                var x = (int)Math.Floor((e.X + theMap.CamX) / 30.0);
+                var y = (int)Math.Floor((e.Y + theMap.CamY) / 30.0);
+                var t = listViewBlocks.SelectedIndices[0];
+                if (theMap.getBlock(x, y, 0).T == 99)
+                    theMap.AddBlock(x, y, t);
+                else if (theMap.getBlock(x, y, 0).T != t)
+                {
+                    theMap.DeleteBlock(x, y);
+                    theMap.AddBlock(x, y, t);
+                }
             }
-        }
-
-        private void LE_Delete(int x, int y)
-        {
-            if (theMap.getBlock(x, y, 0).T != 99)
-                theMap.DeleteBlock(x, y);
+            else if (e.Button == MouseButtons.Right)
+            {
+                var x = (int)Math.Floor((e.X + theMap.CamX) / 30.0);
+                var y = (int)Math.Floor((e.Y + theMap.CamY) / 30.0);
+                if (theMap.getBlock(x, y, 0).T != 99)
+                    theMap.DeleteBlock(x, y);
+            }
         }
 
         // Hat sets
