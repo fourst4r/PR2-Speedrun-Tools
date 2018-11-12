@@ -225,7 +225,7 @@ namespace PR2_Speedrun_Tools
 			get => kValue == (kValue | _downK);
 		    set
 			{
-				byte bVal = General.boolAsByte(value);
+				byte bVal = General.BoolAsByte(value);
 				kValue = (byte)((_downK & bVal) | (kValue & ~_downK));
 			}
 		}
@@ -234,7 +234,7 @@ namespace PR2_Speedrun_Tools
 			get => kValue == (kValue | _upK);
 		    set
 			{
-				byte bVal = General.boolAsByte(value);
+				byte bVal = General.BoolAsByte(value);
 				kValue = (byte)((_upK & bVal) | (kValue & ~_upK));
 			}
 		}
@@ -243,7 +243,7 @@ namespace PR2_Speedrun_Tools
 			get => kValue == (kValue | _rightK);
 		    set
 			{
-				byte bVal = General.boolAsByte(value);
+				byte bVal = General.BoolAsByte(value);
 				kValue = (byte)((_rightK & bVal) | (kValue & ~_rightK));
 			}
 		}
@@ -252,7 +252,7 @@ namespace PR2_Speedrun_Tools
 			get => kValue == (kValue | _leftK);
 		    set
 			{
-				byte bVal = General.boolAsByte(value);
+				byte bVal = General.BoolAsByte(value);
 				kValue = (byte)((_leftK & bVal) | (kValue & ~_leftK));
 			}
 		}
@@ -261,7 +261,7 @@ namespace PR2_Speedrun_Tools
 			get => kValue == (kValue | _spaceK);
 		    set
 			{
-				byte bVal = General.boolAsByte(value);
+				byte bVal = General.BoolAsByte(value);
 				kValue = (byte)((_spaceK & bVal) | (kValue & ~_spaceK));
 			}
 		}

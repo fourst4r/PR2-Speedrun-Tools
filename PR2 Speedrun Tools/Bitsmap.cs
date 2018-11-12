@@ -230,7 +230,7 @@ namespace PR2_Speedrun_Tools
                 arr4[i] = val;
             }
             // each row of pixels
-            double middle = rHeight / 2;
+            double middle = (double)rHeight / 2;
             double middle2 = middle * middle;
             int mPtr = (int)(X + (rWidth * 0.5)) * 4;
             mPtr += (int)BLoc + (Y * Stride);
@@ -328,7 +328,7 @@ namespace PR2_Speedrun_Tools
 
                 double yT = end.Y - start.Y;
                 double xT = end.X - start.X;
-                if (yT == 0)
+                if (yT == 0) //-V3024
                     xPerY = 0;
                 else
                     xPerY = xT / yT;

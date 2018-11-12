@@ -3,6 +3,7 @@ using System;
 using System.Drawing;
 using System.Text;
 using System.Security.Cryptography;
+using System.Media;
 
 namespace PR2_Speedrun_Tools
 {
@@ -10,10 +11,10 @@ namespace PR2_Speedrun_Tools
 	{
 		// Some settings stuffs
 		public static bool HQ = true;
-		static bool soundOn = false;
+		private static bool soundOn = false;
 
-		public static Form1 formRef;
-		public static Settings settings = Settings.Load();
+		public static Form1 FormRef;
+		public static Settings Settings = Settings.Load();
 
 		#region "Bitsmaps"
 		public static Bitsmap[] blockImgs = new Bitsmap[] { new Bitsmap(Resources.BB1), new Bitsmap(Resources.BB2)
@@ -69,10 +70,12 @@ namespace PR2_Speedrun_Tools
 
 			return v;
 		}
+
 		public static string FormatNumber(int val, int atLeast = 0)
 		{
 			return FormatNumber(val.ToString(), atLeast);
 		}
+
 		public static string FormatNumber(double val, int numDecimal, int atLeast = 0)
 		{
 			string v = val.ToString();
@@ -93,8 +96,10 @@ namespace PR2_Speedrun_Tools
 			return FormatNumber(v.Substring(0, d), atLeast) + v.Substring(d);
 		}
 
-		public static byte boolAsByte(bool val)
-		{ return val ? (byte)255 : (byte)0; }
+		public static byte BoolAsByte(bool val)
+		{
+            return val ? (byte)255 : (byte)0;
+        }
 
 		public static void RotatePoint(ref int X, ref int Y, int RotVal)
 		{
@@ -118,31 +123,31 @@ namespace PR2_Speedrun_Tools
 			}
 		}
 
-		public static System.Random R = new System.Random();
+		public static Random R = new Random();
 
-		public static string ColorToHex(System.Drawing.Color c)
+		public static string ColorToHex(Color c)
 		{
 			return (Convert.ToString(c.R, 16).PadLeft(2, '0') + Convert.ToString(c.G, 16).PadLeft(2, '0')
 				+ Convert.ToString(c.B, 16).PadLeft(2, '0')).ToLower();
 		}
+
 		public static string FramesToTime(int f)
 		{
 			if (f < 0)
 				return "-" + FramesToTime(-f);
 			double secs = f / 27.0;
 			int mins = (int)Math.Floor(secs / 60);
-			return mins + ":" + FormatNumber(secs - mins * 60, 2, 2);
+			return mins + ":" + FormatNumber(secs - (mins * 60), 2, 2);
 		}
 
 		public static string GenerateHash(string stringToHash)
 		{
 			byte[] bytesToHash = Encoding.UTF8.GetBytes(stringToHash);
 			byte[] bytesHashed = (new MD5CryptoServiceProvider()).ComputeHash(bytesToHash);
-			string md5Hash = BitConverter.ToString(bytesHashed).Replace("-", "").ToLower();
-			return md5Hash;
+			return BitConverter.ToString(bytesHashed).Replace("-", "").ToLower();
 		}
 
-		static System.Media.SoundPlayer[] soundPlayer = { new System.Media.SoundPlayer(), new System.Media.SoundPlayer(), new System.Media.SoundPlayer() };
+		private static SoundPlayer[] soundPlayer = { new SoundPlayer(), new SoundPlayer(), new SoundPlayer() };
 		static private int spID = 0;
 		public static string sound_path = "C:\\pr2source\\Sound2\\";
 		public static void PlaySound(string fileName)
@@ -186,7 +191,8 @@ namespace PR2_Speedrun_Tools
 
 			System.IO.File.WriteAllBytes(path, saveData);
 		}
-		static public string[] LoadStringArray(string path)
+
+		public static string[] LoadStringArray(string path)
 		{
 			byte[] loadData = System.IO.File.ReadAllBytes(path);
 			int ver = 0;
@@ -219,6 +225,7 @@ namespace PR2_Speedrun_Tools
 		{
 			rng = new RandomMachine(1);
 		}
+
 		static public int GetNextMove()
 		{
 			return rng.nextMax(4);
@@ -228,6 +235,7 @@ namespace PR2_Speedrun_Tools
 		{
 			return rng.getRNGss();
 		}
+
 		static public void useRNGss(string str)
 		{
 			rng.useRNGss(str);
@@ -237,7 +245,7 @@ namespace PR2_Speedrun_Tools
 	public class RandomMachine
 	{
 		// Class taken from https://github.com/aurelien-defossez/la-poudre-blanche/blob/master/src/RandomMachine.as#L6
-		
+
 		// Fields
 		private int _inext;
 		private int _inextp;
@@ -254,6 +262,7 @@ namespace PR2_Speedrun_Tools
 
 			return _inext + ";" + _inextp + ";" + string.Join(";", arr);
 		}
+
 		public void useRNGss(string str)
 		{
 			string[] arr = str.Split(';');
@@ -284,7 +293,7 @@ namespace PR2_Speedrun_Tools
 			}
 			for (int j = 1; j < 5; j++)
 			{
-				for (int k = 1; k < 0x38; k++)
+				for (int k = 1; k < 0x38; k++) //-V3081
 				{
 					_seedArray[k] -= _seedArray[1 + ((k + 30) % 0x37)];
 					if (_seedArray[k] < 0)
@@ -297,12 +306,12 @@ namespace PR2_Speedrun_Tools
 			_inextp = 0x15;
 			seed = 1;
 		}
-		
+
 		public int getseed()
 		{
 			return _seed;
 		}
-		
+
 		private double getSampleForLargeRange()
 		{
 			int num = internalSample();
@@ -312,9 +321,9 @@ namespace PR2_Speedrun_Tools
 			}
 			double num2 = num;
 			num2 += 2147483646.0;
-			return (num2 / 4294967293);
+			return num2 / 4294967293;
 		}
-		
+
 		private int internalSample()
 		{
 			int inext = _inext;
@@ -337,12 +346,12 @@ namespace PR2_Speedrun_Tools
 			_inextp = inextp;
 			return num;
 		}
-		
+
 		public int nextInt()
 		{	
-			return this.internalSample();
+			return internalSample();
 		}
-		
+
 		public int nextMax(int maxValue)
 		{
 			if (maxValue < 0)
@@ -351,7 +360,7 @@ namespace PR2_Speedrun_Tools
 			}
 			return (int)(sample() * maxValue);
 		}
-		
+
 		public int nextMinMax(int minValue, int maxValue)
 		{
 			if (minValue > maxValue)
@@ -361,11 +370,11 @@ namespace PR2_Speedrun_Tools
 			double num = maxValue - minValue;
 			if (num <= 0x7fffffff)
 			{
-				return (((int) (sample() * num)) + minValue);
+				return ((int)(sample() * num)) + minValue;
 			}
-			return (((int) ((double)(getSampleForLargeRange() * num))) + minValue);
+			return ((int)(getSampleForLargeRange() * num)) + minValue;
 		}
-		
+
 		//public void nextBytes(byte[] buffer, int length)
 		//{
 		//	if (buffer == null)
@@ -377,15 +386,15 @@ namespace PR2_Speedrun_Tools
 		//		buffer.writeByte(internalSample() % 0x100);
 		//	}
 		//}
-		
+
 		public double nextNumber()
 		{
 			return sample();
 		}
-		
+
 		protected double sample()
 		{
-			return (internalSample() * 4.6566128752457969E-10);
+			return internalSample() * 4.6566128752457969E-10;
 		}
 	}
 }

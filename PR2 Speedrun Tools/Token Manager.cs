@@ -17,7 +17,7 @@ namespace PR2_Speedrun_Tools
 			InitializeComponent();
 		}
 
-		Settings settings { get { return General.settings; } }
+		Settings settings { get { return General.Settings; } }
 
 		private void Token_Manager_Load(object sender, EventArgs e)
 		{

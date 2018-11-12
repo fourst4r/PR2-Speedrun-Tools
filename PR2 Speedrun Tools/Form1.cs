@@ -18,29 +18,29 @@ namespace PR2_Speedrun_Tools
 	{
 		string RecordingsPath
 		{
-			get { return General.settings.RecordingsPath; }
+			get { return General.Settings.RecordingsPath; }
 			set
 			{
-				General.settings.RecordingsPath = value;
-				General.settings.Save();
+				General.Settings.RecordingsPath = value;
+				General.Settings.Save();
 			}
 		}
 		string LevelsPath
 		{
-			get { return General.settings.LevelsPath; }
+			get { return General.Settings.LevelsPath; }
 			set
 			{
-				General.settings.LevelsPath = value;
-				General.settings.Save();
+				General.Settings.LevelsPath = value;
+				General.Settings.Save();
 			}
 		}
 		string SavestatesPath
 		{
-			get { return General.settings.SavestatesPath; }
+			get { return General.Settings.SavestatesPath; }
 			set
 			{
-				General.settings.SavestatesPath = value;
-				General.settings.Save();
+				General.Settings.SavestatesPath = value;
+				General.Settings.Save();
 			}
 		}
 
@@ -75,18 +75,18 @@ namespace PR2_Speedrun_Tools
 		private void Form1_Load(object sender, EventArgs e)
 		{
 			Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
-			General.formRef = this;
+			General.FormRef = this;
 
 			// Set up the game.
 			game = new Game_ART(pnlGame.Width, pnlGame.Height);
-			if (General.settings.SelectedUser == -1)
+			if (General.Settings.SelectedUser == -1)
 				You.Name = "Player";
 			else
 			{
-				You.Name = General.settings.Users[General.settings.SelectedUser];
+				You.Name = General.Settings.Users[General.Settings.SelectedUser];
 				theMap.userName = You.Name;
 				username = You.Name;
-				login_token = General.settings.Tokens[General.settings.SelectedUser];
+				login_token = General.Settings.Tokens[General.Settings.SelectedUser];
 			}
 			pnlGame.BackgroundImage = game.img.Bit;
 
@@ -807,7 +807,7 @@ namespace PR2_Speedrun_Tools
 		}
 		private void myLevelsButton_Click(object sender, EventArgs e)
 		{
-			string Lnk = "http://pr2hub.com/get_levels.php?random_num=0.1932&token=" + General.settings.Tokens[General.settings.SelectedUser] + "&count=9999";
+			string Lnk = "http://pr2hub.com/get_levels.php?random_num=0.1932&token=" + General.Settings.Tokens[General.Settings.SelectedUser] + "&count=9999";
 			string Lvls = LoadURL(Lnk);
 			if (Lvls.StartsWith("error"))
 			{
@@ -949,14 +949,14 @@ namespace PR2_Speedrun_Tools
 			Token_Manager form = new Token_Manager();
 			form.ShowDialog();
 
-			if (General.settings.SelectedUser == -1)
+			if (General.Settings.SelectedUser == -1)
 				You.Name = "Player";
 			else
 			{
-				You.Name = General.settings.Users[General.settings.SelectedUser];
+				You.Name = General.Settings.Users[General.Settings.SelectedUser];
 				theMap.userName = You.Name;
 				username = You.Name;
-				login_token = General.settings.Tokens[General.settings.SelectedUser];
+				login_token = General.Settings.Tokens[General.Settings.SelectedUser];
 			}
 		}
 
