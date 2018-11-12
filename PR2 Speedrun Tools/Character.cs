@@ -360,6 +360,7 @@ namespace PR2_Speedrun_Tools
 			get { return _input; }
 			set { _nextInput = value; }
 		}
+
 		public RecordedFrame nextInput { get { return _nextInput; } }
 		private void GetInput()
 		{
@@ -371,6 +372,7 @@ namespace PR2_Speedrun_Tools
 			get { return input.up; }
 			set { _nextInput.up = value; }
 		}
+
 		public bool DownK { get { return input.down; } set { _nextInput.down = value; } }
 		public bool LeftK { get { return input.left; } set { _nextInput.left = value; } }
 		public bool RightK { get { return input.right; } set { _nextInput.right = value; } }
@@ -388,6 +390,7 @@ namespace PR2_Speedrun_Tools
 			LeftK = k.left;
 			SpaceK = k.space;
 		}
+
 		public void SetKeys(byte k)
 		{
 			RecordedFrame r = new RecordedFrame();
