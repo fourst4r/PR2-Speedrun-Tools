@@ -693,7 +693,7 @@ namespace PR2_Speedrun_Tools
 						velY += 0.5;
 						SuperJumpVel = 0;
 					}
-					else if (TouchingGround)
+					else
 					{
 						if (SuperJumpVel < 100)
 							SuperJumpVel = SuperJumpVel + 2;
@@ -730,6 +730,7 @@ namespace PR2_Speedrun_Tools
 				State = "water";
 			}
 		}
+
 		private void HurtGo()
 		{
 			TargetVel = 0;
@@ -738,6 +739,7 @@ namespace PR2_Speedrun_Tools
 			if (HurtTimer <= 0)
 				State = "land";
 		}
+
 		private void WaterGo()
 		{
 			GetInput();

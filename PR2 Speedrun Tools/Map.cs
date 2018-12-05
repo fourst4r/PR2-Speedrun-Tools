@@ -38,6 +38,7 @@ namespace PR2_Speedrun_Tools
                 return BlBit.Bit;
             }
         }
+
         public void ResizeView(int width, int height)
         {
             BlBit = new Bitsmap(width, height);
@@ -84,6 +85,7 @@ namespace PR2_Speedrun_Tools
             //else
             //    ReDraw.Invoke();
         }
+
         private Size BlockViewSize;
         private Bitsmap[] BlockI = General.BlockI;
         public void SetRotation(int rot)
@@ -99,6 +101,7 @@ namespace PR2_Speedrun_Tools
                 BlockI[i] = new Bitsmap(temp);
             }
         }
+
         private const bool DrawCrumbleHealth = true;
         private const bool DrawVanishTimers = true;
         private Font HealthFont = new Font(FontFamily.GenericSansSerif, 8.0f);
@@ -172,11 +175,13 @@ namespace PR2_Speedrun_Tools
                 dX = oX;
             }
         }
+
         private void DrawCharacters()
         {
             foreach (LocalCharacter c in Chars)
                 DrawCharacter(c);
         }
+
         public void DrawCharacter(LocalCharacter c)
         {
             Color YouColor = Color.Green;
@@ -241,6 +246,7 @@ namespace PR2_Speedrun_Tools
                     MG.DrawRectangle(new Pen(Color.FromArgb(190, YouColor)), DX, DY, 20 - 1, YH - 1);
             }
         }
+
         private List<Laser> sparkles = new List<Laser>();
         public void AddSparkle(int X, int Y)
         {
@@ -250,6 +256,7 @@ namespace PR2_Speedrun_Tools
             L.TTV = 255;
             sparkles.Add(L);
         }
+
         private void DrawEffects()
         {
             // Lasers
@@ -353,6 +360,7 @@ namespace PR2_Speedrun_Tools
             BlBit.FillRectangleA(Color.FromArgb(60, 0, 0, 0), 2, Image.Height - 28, dX + 4, 23);
             MG.DrawString(timeStr, finishFont, Brushes.White, 4, Image.Height - 26);
         }
+
         private void DrawGrid()
         {
             // Axis

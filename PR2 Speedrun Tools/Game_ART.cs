@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Threading;
 using System.Drawing;
+using System.IO;
 
 namespace PR2_Speedrun_Tools
 {
@@ -74,7 +75,7 @@ namespace PR2_Speedrun_Tools
 		}
 
 		public Bitsmap img;
-		Graphics MG;
+		private Graphics MG;
 		public bool draw = true;
 		public void DrawFrame()
 		{
@@ -88,6 +89,7 @@ namespace PR2_Speedrun_Tools
 
 			ReDraw();
 		}
+
 		public void ReDraw()
 		{
 			img.DrawImage(ref map.BlBit, 0, 0);
@@ -95,6 +97,7 @@ namespace PR2_Speedrun_Tools
 
 			InvokeEvent(FinishDrawing);
 		}
+
 		private Font timeFont = new Font("Courier New", 14);
 		private void DrawInput()
 		{
@@ -129,6 +132,7 @@ namespace PR2_Speedrun_Tools
 				TicksPerFrame = (long)(Stopwatch.Frequency / value);
 			}
 		}
+
 		public double currentFPS;
 		long TicksPerFrame;
 		System.Windows.Forms.Timer gameTimer;
@@ -218,6 +222,7 @@ namespace PR2_Speedrun_Tools
 					StartGame();
 			}
 		}
+
 		public void FrameForward()
 		{
 			if (!paused)
@@ -235,6 +240,7 @@ namespace PR2_Speedrun_Tools
 			for (int i = 0; i < Players.Count; i++)
 				recording.channels[i].SetFrame(Players[i].nextInput, RecFrame);
 		}
+
 		private void UseInputRec()
 		{
 			for (int i = 0; i < Players.Count; i++)
@@ -256,6 +262,7 @@ namespace PR2_Speedrun_Tools
 			recording.channels.Add(new RecordedChannel());
 			recording.channels.Last().SetEndPoint(RecFrame);
 		}
+
 		public void AddGhost(Recording rec)
 		{
 			if (Ghosts == null)
@@ -272,6 +279,7 @@ namespace PR2_Speedrun_Tools
 
 			ghostRecs.Add(rec);
 		}
+
 		public void ClearGhosts()
 		{
 			Ghosts = null;
@@ -327,6 +335,7 @@ namespace PR2_Speedrun_Tools
 				channel = currentChannel;
 			return Players[channel].nextInput;
 		}
+
 		public void SetInput(RecordedFrame input, int channel = -1)
 		{
 			if (channel == -1)
@@ -343,8 +352,9 @@ namespace PR2_Speedrun_Tools
 		public void SaveState(string path)
 		{
 			string[] SSData = map.GetSSData();
-			System.IO.File.WriteAllLines(path, SSData);
+			File.WriteAllLines(path, SSData);
 		}
+
 		public string[] GetSS()
 		{
 			List<string> ret = map.GetSSData().ToList();
@@ -358,11 +368,13 @@ namespace PR2_Speedrun_Tools
 			}
 			return ret.ToArray();
 		}
+
 		public void LoadState(string path)
 		{
 			string[] SSData = System.IO.File.ReadAllLines(path);
 			UseSS(SSData);
 		}
+
 		public void UseSS(string[] ss)
 		{
 			RecordedFrame currentInput = null;
@@ -414,9 +426,8 @@ namespace PR2_Speedrun_Tools
 				}
 				Ghosts[i].course.UseSSData(gSS);
 				i++;
-			};
+			}
 		}
 		#endregion
-
 	}
 }

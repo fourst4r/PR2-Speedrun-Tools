@@ -127,6 +127,7 @@ namespace PR2_Speedrun_Tools
                 course.AddBlockEvent(this, Map.EVENT_REFRZ);
             }
         }
+
         public void ReFreezeable()
         {
             FreezeTime -= 1;
@@ -399,7 +400,7 @@ namespace PR2_Speedrun_Tools
             else
                 tChar.Y = BlocY + 30 + LocalCharacter.spaceY - BumpY;
 
-            tChar.velY = tChar.velY * -0.25;
+            tChar.velY *= -0.25;
             tChar.JumpVel = 0;
 
             if (!(T >= 5 && T <= 8))
@@ -506,13 +507,17 @@ namespace PR2_Speedrun_Tools
             }
             else if (T == BlockID.Vanish)
                 Vanish();
-            else if (T == BlockID.Time)
+            else if (T == BlockID.Time && !Used[tChar.playerID])
             {
-                if (!Used[tChar.playerID])
+                if (course.max_time == 0)
+                {
+                    course.Frames += 10 * 27;
+                }
+                else
                 {
                     course.max_time += 10;
-                    Used[tChar.playerID] = true;
                 }
+                Used[tChar.playerID] = true;
             }
             else if (T == BlockID.Heart)
             {
@@ -524,6 +529,7 @@ namespace PR2_Speedrun_Tools
                 }
             }
         }
+
         public void HitLeft(LocalCharacter tChar)
         {
             int BlocX = X * 30;

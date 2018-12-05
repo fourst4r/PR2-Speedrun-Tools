@@ -542,6 +542,7 @@ namespace PR2_Speedrun_Tools
 			else
 				s.ForeColor = Color.Black;
 		}
+
 		private void numFrame_ValueChanged(object sender, EventArgs e)
 		{
 			manual = false;
@@ -565,6 +566,7 @@ namespace PR2_Speedrun_Tools
 			else
 				chkx10.ForeColor = Color.Black;
 		}
+
 		private void btnPartial_Click(object sender, EventArgs e)
 		{
 			PartialsForm frm = new PartialsForm();
@@ -586,10 +588,12 @@ namespace PR2_Speedrun_Tools
 			txtNoSelect.Select();
 			game.DrawFrame();
 		}
+
 		private void numStat_ValueChanged(object sender, EventArgs e)
 		{
 			lblTotalStats.Text = "(" + (numSpeed.Value + numAccel.Value + numJump.Value) + ")";
 		}
+
 		private void tournamentBth_Click(object sender, EventArgs e)
 		{
 			numSpeed.Value = 65;
@@ -720,6 +724,7 @@ namespace PR2_Speedrun_Tools
 		{
 			get { return (int)numSelectedPlayer.Value - 1; }
 		}
+
 		private void numSelectedPlayer_ValueChanged(object sender, EventArgs e)
 		{
 			manual = false;
@@ -741,10 +746,12 @@ namespace PR2_Speedrun_Tools
 			game.currentChannel = SelectedPlayer;
 			game.DrawFrame();
 		}
+
 		private void btnAddPlayer_Click(object sender, EventArgs e)
 		{
 			AddPlayer();
 		}
+
 		private void AddPlayer()
 		{
 			game.AddPlayer();
@@ -754,6 +761,7 @@ namespace PR2_Speedrun_Tools
 
 			game.recording.channels.Add(new RecordedChannel());
 		}
+
 		private void ghostBtn_Click(object sender, EventArgs e)
 		{
 			OpenFileDialog dialog = new OpenFileDialog();
@@ -775,6 +783,7 @@ namespace PR2_Speedrun_Tools
 			game.AddGhost(rec);
 			lblRecStatus.Text = "Loaded Ghost: " + dialog.SafeFileName;
 		}
+
 		private void removeGhostsBtn_Click(object sender, EventArgs e)
 		{
 			game.ClearGhosts();
@@ -794,6 +803,7 @@ namespace PR2_Speedrun_Tools
 			public int MinRank;
 			public string Type;
 		}
+
 		private List<LevelInfo> Levels = new List<LevelInfo>();
 
 		private void searchBtn_Click(object sender, EventArgs e)
@@ -805,6 +815,7 @@ namespace PR2_Speedrun_Tools
 			string Lvls = PostLoad(Lnk, SD);
 			DisplayLevels(Lvls);
 		}
+
 		private void myLevelsButton_Click(object sender, EventArgs e)
 		{
 			string Lnk = "http://pr2hub.com/get_levels.php?random_num=0.1932&token=" + General.Settings.Tokens[General.Settings.SelectedUser] + "&count=9999";
@@ -816,6 +827,7 @@ namespace PR2_Speedrun_Tools
 			else
 				DisplayLevels(Lvls);
 		}
+
 		private string LoadURL(string Link)
 		{
 			StreamReader inStream;
@@ -970,6 +982,7 @@ namespace PR2_Speedrun_Tools
 		{
 			txtNoSelect.Select();
 		}
+
 		private void txtNoSelect_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
 		{
 			if (e.KeyCode == Keys.Tab)
@@ -1020,6 +1033,7 @@ namespace PR2_Speedrun_Tools
 			byte[] bytesHashed = (new MD5CryptoServiceProvider()).ComputeHash(bytesToHash);
 			return BitConverter.ToString(bytesHashed).Replace("-", "").ToLower();
 		}
+
 		private string PassHash(string pass)
 		{
 			string stringToHash = pass + "WGZSL3JWcUE9L3Q4YipZIQ==";
@@ -1033,6 +1047,7 @@ namespace PR2_Speedrun_Tools
 			string LData = GetSaveData() + "&token=" + login_token;
 			return PostLoad("http://pr2hub.com/upload_level.php", LData);
 		}
+
 		private string PostLoad(string Link, string postData)
 		{
 			// Create a request using a URL that can receive a post. 
@@ -1092,34 +1107,42 @@ namespace PR2_Speedrun_Tools
 		{
 			theMap.note = txtNote.Text;
 		}
+
 		private void txtTitle_TextChanged(object sender, EventArgs e)
 		{
 			theMap.Title = txtTitle.Text;
 		}
+
 		private void txtCredits_TextChanged(object sender, EventArgs e)
 		{
 			theMap.credits = txtCredits.Text;
 		}
+
 		private void numGravity_ValueChanged(object sender, EventArgs e)
 		{
 			theMap.Gravity = (double)numGravity.Value;
 		}
+
 		private void cmbMusic_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			theMap.song = cmbMusic.SelectedIndex;
 		}
+
 		private void numMinLevel_ValueChanged(object sender, EventArgs e)
 		{
 			theMap.min_level = (sbyte)numMinLevel.Value;
 		}
+
 		private void cmbGameMode_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			theMap.gameMode = cmbGameMode.Text.ToLower();
 		}
+
 		private void numCowboyChance_ValueChanged(object sender, EventArgs e)
 		{
 			theMap.cowboyChance = (int)numCowboyChance.Value;
 		}
+
 		private void chkLive_CheckStateChanged(object sender, EventArgs e)
 		{
 			if (chkLive.CheckState == CheckState.Indeterminate)
