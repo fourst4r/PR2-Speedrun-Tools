@@ -135,6 +135,12 @@
     <Compile Include="Hat.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="LevelCompressor.cs" />
+    <Compile Include="LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LoginForm.Designer.cs">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Map.cs" />
     <Compile Include="PartialsForm.cs">
       <SubType>Form</SubType>
@@ -155,6 +161,9 @@
     </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LoginForm.resx">
+      <DependentUpon>LoginForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PartialsForm.resx">
       <DependentUpon>PartialsForm.cs</DependentUpon>

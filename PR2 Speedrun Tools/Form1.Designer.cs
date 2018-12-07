@@ -64,6 +64,7 @@
             this.pnlGame = new System.Windows.Forms.Panel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabLevels = new System.Windows.Forms.TabPage();
+            this.buttonLogin = new System.Windows.Forms.Button();
             this.tokenBtn = new System.Windows.Forms.Button();
             this.loadLevelBtn = new System.Windows.Forms.Button();
             this.noteBox = new System.Windows.Forms.RichTextBox();
@@ -153,6 +154,10 @@
             this.chkDown = new System.Windows.Forms.CheckBox();
             this.chkUp = new System.Windows.Forms.CheckBox();
             this.btnPlay = new System.Windows.Forms.Button();
+            this.tabLE = new System.Windows.Forms.TabPage();
+            this.listViewBlocks = new System.Windows.Forms.ListView();
+            this.colHdrBlock = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.imageListBlocks = new System.Windows.Forms.ImageList(this.components);
             this.txtNoSelect = new System.Windows.Forms.TextBox();
             this.lblPause = new System.Windows.Forms.Label();
             this.lblVelX = new System.Windows.Forms.Label();
@@ -175,10 +180,6 @@
             this.ghostBtn = new System.Windows.Forms.Button();
             this.removeGhostsBtn = new System.Windows.Forms.Button();
             this.currentFPSLbl = new System.Windows.Forms.Label();
-            this.tabLE = new System.Windows.Forms.TabPage();
-            this.listViewBlocks = new System.Windows.Forms.ListView();
-            this.colHdrBlock = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.imageListBlocks = new System.Windows.Forms.ImageList(this.components);
             this.tabControl1.SuspendLayout();
             this.tabLevels.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pageNum)).BeginInit();
@@ -194,8 +195,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.numSpeed)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numNextLast)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFrame)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.fpsNum)).BeginInit();
             this.tabLE.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.fpsNum)).BeginInit();
             this.SuspendLayout();
             // 
             // pnlGame
@@ -228,6 +229,7 @@
             // 
             // tabLevels
             // 
+            this.tabLevels.Controls.Add(this.buttonLogin);
             this.tabLevels.Controls.Add(this.tokenBtn);
             this.tabLevels.Controls.Add(this.loadLevelBtn);
             this.tabLevels.Controls.Add(this.noteBox);
@@ -258,6 +260,17 @@
             this.tabLevels.TabIndex = 0;
             this.tabLevels.Text = "Levels";
             this.tabLevels.UseVisualStyleBackColor = true;
+            // 
+            // buttonLogin
+            // 
+            this.buttonLogin.Location = new System.Drawing.Point(108, 391);
+            this.buttonLogin.Name = "buttonLogin";
+            this.buttonLogin.Size = new System.Drawing.Size(75, 23);
+            this.buttonLogin.TabIndex = 13;
+            this.buttonLogin.Text = "Login";
+            this.buttonLogin.UseVisualStyleBackColor = true;
+            this.buttonLogin.Visible = false;
+            this.buttonLogin.Click += new System.EventHandler(this.buttonLogin_Click);
             // 
             // tokenBtn
             // 
@@ -1324,6 +1337,104 @@
             this.btnPlay.UseVisualStyleBackColor = true;
             this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
             // 
+            // tabLE
+            // 
+            this.tabLE.Controls.Add(this.listViewBlocks);
+            this.tabLE.Location = new System.Drawing.Point(4, 22);
+            this.tabLE.Name = "tabLE";
+            this.tabLE.Padding = new System.Windows.Forms.Padding(3);
+            this.tabLE.Size = new System.Drawing.Size(192, 476);
+            this.tabLE.TabIndex = 3;
+            this.tabLE.Text = "LE";
+            this.tabLE.UseVisualStyleBackColor = true;
+            // 
+            // listViewBlocks
+            // 
+            this.listViewBlocks.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colHdrBlock});
+            this.listViewBlocks.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.listViewBlocks.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem1,
+            listViewItem2,
+            listViewItem3,
+            listViewItem4,
+            listViewItem5,
+            listViewItem6,
+            listViewItem7,
+            listViewItem8,
+            listViewItem9,
+            listViewItem10,
+            listViewItem11,
+            listViewItem12,
+            listViewItem13,
+            listViewItem14,
+            listViewItem15,
+            listViewItem16,
+            listViewItem17,
+            listViewItem18,
+            listViewItem19,
+            listViewItem20,
+            listViewItem21,
+            listViewItem22,
+            listViewItem23,
+            listViewItem24,
+            listViewItem25,
+            listViewItem26,
+            listViewItem27,
+            listViewItem28,
+            listViewItem29,
+            listViewItem30,
+            listViewItem31});
+            this.listViewBlocks.Location = new System.Drawing.Point(137, 3);
+            this.listViewBlocks.MultiSelect = false;
+            this.listViewBlocks.Name = "listViewBlocks";
+            this.listViewBlocks.Size = new System.Drawing.Size(52, 473);
+            this.listViewBlocks.SmallImageList = this.imageListBlocks;
+            this.listViewBlocks.TabIndex = 2;
+            this.listViewBlocks.TileSize = new System.Drawing.Size(30, 30);
+            this.listViewBlocks.UseCompatibleStateImageBehavior = false;
+            this.listViewBlocks.View = System.Windows.Forms.View.SmallIcon;
+            // 
+            // colHdrBlock
+            // 
+            this.colHdrBlock.Text = "Block";
+            // 
+            // imageListBlocks
+            // 
+            this.imageListBlocks.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListBlocks.ImageStream")));
+            this.imageListBlocks.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageListBlocks.Images.SetKeyName(0, "BB1.bmp");
+            this.imageListBlocks.Images.SetKeyName(1, "BB2.bmp");
+            this.imageListBlocks.Images.SetKeyName(2, "BB3.bmp");
+            this.imageListBlocks.Images.SetKeyName(3, "BB4.bmp");
+            this.imageListBlocks.Images.SetKeyName(4, "Brick.bmp");
+            this.imageListBlocks.Images.SetKeyName(5, "Down Arrow.bmp");
+            this.imageListBlocks.Images.SetKeyName(6, "Up Arrow.bmp");
+            this.imageListBlocks.Images.SetKeyName(7, "Left Arrow.bmp");
+            this.imageListBlocks.Images.SetKeyName(8, "Right Arrow.bmp");
+            this.imageListBlocks.Images.SetKeyName(9, "Mine.bmp");
+            this.imageListBlocks.Images.SetKeyName(10, "Item.bmp");
+            this.imageListBlocks.Images.SetKeyName(11, "P1 Start.bmp");
+            this.imageListBlocks.Images.SetKeyName(12, "P2 Start.bmp");
+            this.imageListBlocks.Images.SetKeyName(13, "P3 Start.bmp");
+            this.imageListBlocks.Images.SetKeyName(14, "P4 Start.bmp");
+            this.imageListBlocks.Images.SetKeyName(15, "Ice.bmp");
+            this.imageListBlocks.Images.SetKeyName(16, "Finish.bmp");
+            this.imageListBlocks.Images.SetKeyName(17, "Crumble.bmp");
+            this.imageListBlocks.Images.SetKeyName(18, "Vanish.bmp");
+            this.imageListBlocks.Images.SetKeyName(19, "Move.bmp");
+            this.imageListBlocks.Images.SetKeyName(20, "Water.bmp");
+            this.imageListBlocks.Images.SetKeyName(21, "RotateR.bmp");
+            this.imageListBlocks.Images.SetKeyName(22, "RotateL.bmp");
+            this.imageListBlocks.Images.SetKeyName(23, "Push.bmp");
+            this.imageListBlocks.Images.SetKeyName(24, "Safety.bmp");
+            this.imageListBlocks.Images.SetKeyName(25, "Inf Item.bmp");
+            this.imageListBlocks.Images.SetKeyName(26, "Happy.bmp");
+            this.imageListBlocks.Images.SetKeyName(27, "Sad.bmp");
+            this.imageListBlocks.Images.SetKeyName(28, "Heart.bmp");
+            this.imageListBlocks.Images.SetKeyName(29, "image 11 (TimeBitmap).bmp");
+            this.imageListBlocks.Images.SetKeyName(30, "Egg.PNG");
+            // 
             // txtNoSelect
             // 
             this.txtNoSelect.Location = new System.Drawing.Point(0, -50);
@@ -1572,104 +1683,6 @@
             this.currentFPSLbl.TabIndex = 28;
             this.currentFPSLbl.Text = "FPS: 0";
             // 
-            // tabLE
-            // 
-            this.tabLE.Controls.Add(this.listViewBlocks);
-            this.tabLE.Location = new System.Drawing.Point(4, 22);
-            this.tabLE.Name = "tabLE";
-            this.tabLE.Padding = new System.Windows.Forms.Padding(3);
-            this.tabLE.Size = new System.Drawing.Size(192, 476);
-            this.tabLE.TabIndex = 3;
-            this.tabLE.Text = "LE";
-            this.tabLE.UseVisualStyleBackColor = true;
-            // 
-            // listViewBlocks
-            // 
-            this.listViewBlocks.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.colHdrBlock});
-            this.listViewBlocks.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.listViewBlocks.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2,
-            listViewItem3,
-            listViewItem4,
-            listViewItem5,
-            listViewItem6,
-            listViewItem7,
-            listViewItem8,
-            listViewItem9,
-            listViewItem10,
-            listViewItem11,
-            listViewItem12,
-            listViewItem13,
-            listViewItem14,
-            listViewItem15,
-            listViewItem16,
-            listViewItem17,
-            listViewItem18,
-            listViewItem19,
-            listViewItem20,
-            listViewItem21,
-            listViewItem22,
-            listViewItem23,
-            listViewItem24,
-            listViewItem25,
-            listViewItem26,
-            listViewItem27,
-            listViewItem28,
-            listViewItem29,
-            listViewItem30,
-            listViewItem31});
-            this.listViewBlocks.Location = new System.Drawing.Point(137, 3);
-            this.listViewBlocks.MultiSelect = false;
-            this.listViewBlocks.Name = "listViewBlocks";
-            this.listViewBlocks.Size = new System.Drawing.Size(52, 473);
-            this.listViewBlocks.SmallImageList = this.imageListBlocks;
-            this.listViewBlocks.TabIndex = 2;
-            this.listViewBlocks.TileSize = new System.Drawing.Size(30, 30);
-            this.listViewBlocks.UseCompatibleStateImageBehavior = false;
-            this.listViewBlocks.View = System.Windows.Forms.View.SmallIcon;
-            // 
-            // colHdrBlock
-            // 
-            this.colHdrBlock.Text = "Block";
-            // 
-            // imageListBlocks
-            // 
-            this.imageListBlocks.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListBlocks.ImageStream")));
-            this.imageListBlocks.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageListBlocks.Images.SetKeyName(0, "BB1.bmp");
-            this.imageListBlocks.Images.SetKeyName(1, "BB2.bmp");
-            this.imageListBlocks.Images.SetKeyName(2, "BB3.bmp");
-            this.imageListBlocks.Images.SetKeyName(3, "BB4.bmp");
-            this.imageListBlocks.Images.SetKeyName(4, "Brick.bmp");
-            this.imageListBlocks.Images.SetKeyName(5, "Down Arrow.bmp");
-            this.imageListBlocks.Images.SetKeyName(6, "Up Arrow.bmp");
-            this.imageListBlocks.Images.SetKeyName(7, "Left Arrow.bmp");
-            this.imageListBlocks.Images.SetKeyName(8, "Right Arrow.bmp");
-            this.imageListBlocks.Images.SetKeyName(9, "Mine.bmp");
-            this.imageListBlocks.Images.SetKeyName(10, "Item.bmp");
-            this.imageListBlocks.Images.SetKeyName(11, "P1 Start.bmp");
-            this.imageListBlocks.Images.SetKeyName(12, "P2 Start.bmp");
-            this.imageListBlocks.Images.SetKeyName(13, "P3 Start.bmp");
-            this.imageListBlocks.Images.SetKeyName(14, "P4 Start.bmp");
-            this.imageListBlocks.Images.SetKeyName(15, "Ice.bmp");
-            this.imageListBlocks.Images.SetKeyName(16, "Finish.bmp");
-            this.imageListBlocks.Images.SetKeyName(17, "Crumble.bmp");
-            this.imageListBlocks.Images.SetKeyName(18, "Vanish.bmp");
-            this.imageListBlocks.Images.SetKeyName(19, "Move.bmp");
-            this.imageListBlocks.Images.SetKeyName(20, "Water.bmp");
-            this.imageListBlocks.Images.SetKeyName(21, "RotateR.bmp");
-            this.imageListBlocks.Images.SetKeyName(22, "RotateL.bmp");
-            this.imageListBlocks.Images.SetKeyName(23, "Push.bmp");
-            this.imageListBlocks.Images.SetKeyName(24, "Safety.bmp");
-            this.imageListBlocks.Images.SetKeyName(25, "Inf Item.bmp");
-            this.imageListBlocks.Images.SetKeyName(26, "Happy.bmp");
-            this.imageListBlocks.Images.SetKeyName(27, "Sad.bmp");
-            this.imageListBlocks.Images.SetKeyName(28, "Heart.bmp");
-            this.imageListBlocks.Images.SetKeyName(29, "image 11 (TimeBitmap).bmp");
-            this.imageListBlocks.Images.SetKeyName(30, "Egg.PNG");
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1727,8 +1740,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.numSpeed)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numNextLast)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFrame)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.fpsNum)).EndInit();
             this.tabLE.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.fpsNum)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1854,6 +1867,7 @@
         private System.Windows.Forms.ListView listViewBlocks;
         private System.Windows.Forms.ColumnHeader colHdrBlock;
         private System.Windows.Forms.ImageList imageListBlocks;
+        private System.Windows.Forms.Button buttonLogin;
     }
 }
 

@@ -11,6 +11,7 @@ using System.Net;
 using System.Threading;
 using System.Security.Cryptography;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace PR2_Speedrun_Tools
 {
@@ -1170,6 +1171,26 @@ namespace PR2_Speedrun_Tools
                 return;
 
             loadLevelBtn_Click(null, null);
+        }
+
+        private void buttonLogin_Click(object sender, EventArgs e)
+        {
+            using (var frm = new LoginForm())
+            {
+                if (frm.ShowDialog() == DialogResult.OK)
+                {
+                    Login(frm.Username, frm.Password);
+                }
+            }
+        }
+
+        [DllImport("pr2secrets.dll", CharSet =CharSet.Auto)]
+        private static extern void HelloWorld();
+
+        private void Login(string username, string password)
+        {
+            HelloWorld();
+            //MessageBox.Show(RetrieveToken("asdf", "ghjk"));
         }
     }
 }
