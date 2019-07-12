@@ -64,7 +64,6 @@
             this.pnlGame = new System.Windows.Forms.Panel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabLevels = new System.Windows.Forms.TabPage();
-            this.buttonLogin = new System.Windows.Forms.Button();
             this.tokenBtn = new System.Windows.Forms.Button();
             this.loadLevelBtn = new System.Windows.Forms.Button();
             this.noteBox = new System.Windows.Forms.RichTextBox();
@@ -96,6 +95,7 @@
             this.cmbMusic = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.linkLabelToggleItems = new System.Windows.Forms.LinkLabel();
             this.chkMine = new System.Windows.Forms.CheckBox();
             this.chkTeleport = new System.Windows.Forms.CheckBox();
             this.chkJetPack = new System.Windows.Forms.CheckBox();
@@ -167,7 +167,7 @@
             this.lblTVel = new System.Windows.Forms.Label();
             this.lblSJump = new System.Windows.Forms.Label();
             this.lblHurt = new System.Windows.Forms.Label();
-            this.lblState = new System.Windows.Forms.Label();
+            this.lblMode = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.chkProp = new System.Windows.Forms.CheckBox();
             this.chkCrown = new System.Windows.Forms.CheckBox();
@@ -180,6 +180,9 @@
             this.ghostBtn = new System.Windows.Forms.Button();
             this.removeGhostsBtn = new System.Windows.Forms.Button();
             this.currentFPSLbl = new System.Windows.Forms.Label();
+            this.chkJigg = new System.Windows.Forms.CheckBox();
+            this.chkArti = new System.Windows.Forms.CheckBox();
+            this.lblState = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabLevels.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pageNum)).BeginInit();
@@ -229,7 +232,6 @@
             // 
             // tabLevels
             // 
-            this.tabLevels.Controls.Add(this.buttonLogin);
             this.tabLevels.Controls.Add(this.tokenBtn);
             this.tabLevels.Controls.Add(this.loadLevelBtn);
             this.tabLevels.Controls.Add(this.noteBox);
@@ -260,17 +262,6 @@
             this.tabLevels.TabIndex = 0;
             this.tabLevels.Text = "Levels";
             this.tabLevels.UseVisualStyleBackColor = true;
-            // 
-            // buttonLogin
-            // 
-            this.buttonLogin.Location = new System.Drawing.Point(108, 391);
-            this.buttonLogin.Name = "buttonLogin";
-            this.buttonLogin.Size = new System.Drawing.Size(75, 23);
-            this.buttonLogin.TabIndex = 13;
-            this.buttonLogin.Text = "Login";
-            this.buttonLogin.UseVisualStyleBackColor = true;
-            this.buttonLogin.Visible = false;
-            this.buttonLogin.Click += new System.EventHandler(this.buttonLogin_Click);
             // 
             // tokenBtn
             // 
@@ -549,6 +540,7 @@
             // 
             // uploadBtn
             // 
+            this.uploadBtn.Enabled = false;
             this.uploadBtn.Location = new System.Drawing.Point(17, 444);
             this.uploadBtn.Name = "uploadBtn";
             this.uploadBtn.Size = new System.Drawing.Size(75, 23);
@@ -619,6 +611,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.linkLabelToggleItems);
             this.groupBox1.Controls.Add(this.chkMine);
             this.groupBox1.Controls.Add(this.chkTeleport);
             this.groupBox1.Controls.Add(this.chkJetPack);
@@ -635,6 +628,17 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Items";
             this.groupBox1.UseCompatibleTextRendering = true;
+            // 
+            // linkLabelToggleItems
+            // 
+            this.linkLabelToggleItems.AutoSize = true;
+            this.linkLabelToggleItems.Location = new System.Drawing.Point(87, 84);
+            this.linkLabelToggleItems.Name = "linkLabelToggleItems";
+            this.linkLabelToggleItems.Size = new System.Drawing.Size(49, 13);
+            this.linkLabelToggleItems.TabIndex = 1;
+            this.linkLabelToggleItems.TabStop = true;
+            this.linkLabelToggleItems.Text = "toggle all";
+            this.linkLabelToggleItems.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelToggleItems_LinkClicked);
             // 
             // chkMine
             // 
@@ -683,7 +687,6 @@
             // chkFreezeRay
             // 
             this.chkFreezeRay.AutoSize = true;
-            this.chkFreezeRay.Enabled = false;
             this.chkFreezeRay.Location = new System.Drawing.Point(6, 84);
             this.chkFreezeRay.Name = "chkFreezeRay";
             this.chkFreezeRay.Size = new System.Drawing.Size(80, 17);
@@ -1353,6 +1356,7 @@
             this.listViewBlocks.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colHdrBlock});
             this.listViewBlocks.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.listViewBlocks.HideSelection = false;
             this.listViewBlocks.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
             listViewItem1,
             listViewItem2,
@@ -1524,15 +1528,15 @@
             this.lblHurt.TabIndex = 5;
             this.lblHurt.Text = "Hurt: 0";
             // 
-            // lblState
+            // lblMode
             // 
-            this.lblState.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblState.AutoSize = true;
-            this.lblState.Location = new System.Drawing.Point(321, 477);
-            this.lblState.Name = "lblState";
-            this.lblState.Size = new System.Drawing.Size(60, 13);
-            this.lblState.TabIndex = 5;
-            this.lblState.Text = "Mode: land";
+            this.lblMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblMode.AutoSize = true;
+            this.lblMode.Location = new System.Drawing.Point(321, 477);
+            this.lblMode.Name = "lblMode";
+            this.lblMode.Size = new System.Drawing.Size(60, 13);
+            this.lblMode.TabIndex = 5;
+            this.lblMode.Text = "Mode: land";
             // 
             // button1
             // 
@@ -1683,11 +1687,47 @@
             this.currentFPSLbl.TabIndex = 28;
             this.currentFPSLbl.Text = "FPS: 0";
             // 
+            // chkJigg
+            // 
+            this.chkJigg.AutoSize = true;
+            this.chkJigg.Enabled = false;
+            this.chkJigg.Location = new System.Drawing.Point(172, 454);
+            this.chkJigg.Name = "chkJigg";
+            this.chkJigg.Size = new System.Drawing.Size(45, 17);
+            this.chkJigg.TabIndex = 29;
+            this.chkJigg.Text = "Jigg";
+            this.chkJigg.UseVisualStyleBackColor = true;
+            this.chkJigg.CheckedChanged += new System.EventHandler(this.chkHats_CheckedChanged);
+            // 
+            // chkArti
+            // 
+            this.chkArti.AutoSize = true;
+            this.chkArti.Enabled = false;
+            this.chkArti.Location = new System.Drawing.Point(172, 472);
+            this.chkArti.Name = "chkArti";
+            this.chkArti.Size = new System.Drawing.Size(41, 17);
+            this.chkArti.TabIndex = 30;
+            this.chkArti.Text = "Arti";
+            this.chkArti.UseVisualStyleBackColor = true;
+            this.chkArti.CheckedChanged += new System.EventHandler(this.chkHats_CheckedChanged);
+            // 
+            // lblState
+            // 
+            this.lblState.AutoSize = true;
+            this.lblState.Location = new System.Drawing.Point(321, 423);
+            this.lblState.Name = "lblState";
+            this.lblState.Size = new System.Drawing.Size(64, 13);
+            this.lblState.TabIndex = 31;
+            this.lblState.Text = "State: stand";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(739, 501);
+            this.Controls.Add(this.lblState);
+            this.Controls.Add(this.chkArti);
+            this.Controls.Add(this.chkJigg);
             this.Controls.Add(this.currentFPSLbl);
             this.Controls.Add(this.removeGhostsBtn);
             this.Controls.Add(this.ghostBtn);
@@ -1703,7 +1743,7 @@
             this.Controls.Add(this.lblPosY);
             this.Controls.Add(this.lblPosX);
             this.Controls.Add(this.lblVelY);
-            this.Controls.Add(this.lblState);
+            this.Controls.Add(this.lblMode);
             this.Controls.Add(this.lblHurt);
             this.Controls.Add(this.lblSJump);
             this.Controls.Add(this.lblTVel);
@@ -1819,7 +1859,7 @@
         private System.Windows.Forms.Label lblTVel;
         private System.Windows.Forms.Label lblSJump;
         private System.Windows.Forms.Label lblHurt;
-        private System.Windows.Forms.Label lblState;
+        private System.Windows.Forms.Label lblMode;
         private System.Windows.Forms.Button btnPartial;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.CheckBox chkProp;
@@ -1867,7 +1907,10 @@
         private System.Windows.Forms.ListView listViewBlocks;
         private System.Windows.Forms.ColumnHeader colHdrBlock;
         private System.Windows.Forms.ImageList imageListBlocks;
-        private System.Windows.Forms.Button buttonLogin;
+        private System.Windows.Forms.LinkLabel linkLabelToggleItems;
+        private System.Windows.Forms.CheckBox chkJigg;
+        private System.Windows.Forms.CheckBox chkArti;
+        private System.Windows.Forms.Label lblState;
     }
 }
 

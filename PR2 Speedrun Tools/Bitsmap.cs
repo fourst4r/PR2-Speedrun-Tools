@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.Drawing;
+using System.Diagnostics;
 
 namespace PR2_Speedrun_Tools
 {
@@ -109,6 +110,41 @@ namespace PR2_Speedrun_Tools
                 return; // Outside bounds of bitmap
 
             Marshal.WriteByte(BLoc + (X * 4) + (Y * Stride) + off, val);
+        }
+
+        /// <summary>
+        /// Set alpha of Bitsmap.
+        /// </summary>
+        /// <param name="value">Alpha value from 0 to 1</param>
+        public void SetAlpha(float value)
+        {
+            Debug.Assert(value != 1.0f);
+            // (32 bits = 4 bytes, 3 for RGB and 1 byte for alpha).
+            int numBytes = Width * Height * 4;
+            byte[] argbValues = new byte[numBytes];
+
+            // Copy the ARGB values into the array.
+            Marshal.Copy(BLoc, argbValues, 0, numBytes);
+
+            // Manipulate the bitmap, such as changing the
+            // RGB values for all pixels in the bitmap.
+            for (int counter = 0; counter < argbValues.Length; counter += 4)
+            {
+                // argbValues is in format BGRA
+
+                // If 100% transparent, skip pixel
+                if (argbValues[counter + 3] == 0)
+                    continue;
+
+                int pos = 0;
+                pos++; // B value
+                pos++; // G value
+                pos++; // R value
+
+                argbValues[counter + pos] = (byte)(255 * value);
+            }
+
+            Marshal.Copy(argbValues, 0, BLoc, numBytes);
         }
 
         public void FillRectangle(Color Col, int X, int Y, int rWidth, int rHeight)

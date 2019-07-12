@@ -241,9 +241,6 @@
   <data name="Lasergun" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Lasergun.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Lightning" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Lightning.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Mine1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Mine1.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -312,5 +309,23 @@
   </data>
   <data name="Egg" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Egg.PNG;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IceWave" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IceWave.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Item_IceWave" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Item_IceWave.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Item_Lightning" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Item_Lightning.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Lightning" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Lightning.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LightningStrike" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LightningStrike.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Wave" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Wave.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

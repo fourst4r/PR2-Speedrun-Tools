@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -10,7 +8,7 @@ using System.IO;
 using System.Net;
 using System.Threading;
 using System.Security.Cryptography;
-using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.InteropServices;
 
 namespace PR2_Speedrun_Tools
@@ -59,23 +57,23 @@ namespace PR2_Speedrun_Tools
 		Game_ART game;
 
 		Map theMap
-		{
-			get { return game.map; }
-			set { game.map = value; }
-		}
-		LocalCharacter You
-		{
-			get { return game.Players[SelectedPlayer]; }
-			set { game.Players[SelectedPlayer] = value; }
-		}
+        {
+            get => game.map;
+            set => game.map = value;
+        }
+        LocalCharacter You
+        {
+            get => game.Players[SelectedPlayer];
+            set => game.Players[SelectedPlayer] = value;
+        }
 
-		CheckBox[] chkItems;
+        CheckBox[] chkItems;
 		CheckBox[] chkInput;
 		CheckBox[] chkHats;
 		private bool loaded = false;
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+			Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 			General.FormRef = this;
 
 			// Set up the game.
@@ -97,7 +95,7 @@ namespace PR2_Speedrun_Tools
 
 			// Control array(s)
 			chkItems = new CheckBox[] { chkLaserGun, chkMine, chkLightning, chkTeleport, chkSuperJump, chkJetPack, chkSpeedy, chkSword, chkFreezeRay };
-			chkHats = new CheckBox[] { null, null, null, null, chkProp, chkCowboy, chkCrown, chkSanta, null, chkTop, chkJump, null, null, null, null };
+			chkHats = new CheckBox[] { null, null, null, null, chkProp, chkCowboy, chkCrown, chkSanta, null, chkTop, chkJump, null, null, chkJigg, chkArti };
 			for (int i = 0; i < chkItems.Length; i++)
 				chkItems[i].Tag = i + 1;
 			chkInput = new CheckBox[] { chkSpace, chkLeft, chkRight, chkUp, chkDown };
@@ -116,10 +114,12 @@ namespace PR2_Speedrun_Tools
 
 			loaded = true;
 		}
+
 		private void Form1_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			game.Dispose();
 		}
+
 		private void pnlGame_Resize(object sender, EventArgs e)
 		{
 			if (!loaded || pnlGame.Width == 0)
@@ -137,6 +137,7 @@ namespace PR2_Speedrun_Tools
 			pnlGame.CreateGraphics().DrawImage(pnlGame.BackgroundImage, 0, 0);
 			pnlGame.ResumeLayout();
 		}
+
 		private void endOfFrame()
 		{
 			if (cChannel.Frames != 0)
@@ -158,7 +159,7 @@ namespace PR2_Speedrun_Tools
 
 		private void DisplayInfos()
 		{
-			lblVelX.Text = "VelX: " + General.FormatNumber(Math.Round(You.velX, 2), 2);
+            lblVelX.Text = "VelX: " + General.FormatNumber(Math.Round(You.velX, 2), 2);
 			lblVelY.Text = "VelY: " + General.FormatNumber(Math.Round(You.velY, 2), 2);
 			double X = Math.Round(You.X, 2);
 			X -= (Math.Floor(X / 30) * 30);
@@ -169,7 +170,8 @@ namespace PR2_Speedrun_Tools
 			lblTVel.Text = "TVel: " + General.FormatNumber(Math.Round(You.TargetVel, 2), 2);
 			lblSJump.Text = "SJump: " + General.FormatNumber(You.SuperJumpVel, 0, 0);
 			lblHurt.Text = "Hurt: " + General.FormatNumber(You.HurtTimer, 0, 0);
-			lblState.Text = "State: " + You.State;
+			lblMode.Text = "Mode: " + You.Mode;
+            lblState.Text = "State: " + You.State;
 
 			numSpeed.Value = You.SpStat;
 			numAccel.Value = You.AccStat;
@@ -182,19 +184,22 @@ namespace PR2_Speedrun_Tools
 		// Load a level
 		private void btnLoadLevel_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog dialog = new OpenFileDialog();
-			dialog.InitialDirectory = LevelsPath;
+            using (var dialog = new OpenFileDialog())
+            {
+                dialog.InitialDirectory = LevelsPath;
 
-			if (dialog.ShowDialog() == DialogResult.Cancel)
-				return;
+                if (dialog.ShowDialog() == DialogResult.Cancel)
+                    return;
 
-			theMap.enterLE(); // Idk what happens if you try to load a level mid-game
-			theMap.LoadLevel(File.ReadAllText(dialog.FileName));
+                theMap.enterLE(); // Idk what happens if you try to load a level mid-game
+                theMap.LoadLevel(File.ReadAllText(dialog.FileName));
 
-			UpdateLevelInfo();
+                UpdateLevelInfo();
 
-			LevelsPath = Directory.GetParent(dialog.FileName).FullName;
+                LevelsPath = Directory.GetParent(dialog.FileName).FullName;
+            }
 		}
+
 		// Update displayed level info
 		private void UpdateLevelInfo()
 		{
@@ -235,40 +240,45 @@ namespace PR2_Speedrun_Tools
 			if (game.isPlayingRec)
 				btnPlayRec_Click(null, null);
 
-			OpenFileDialog dialog = new OpenFileDialog();
-			dialog.InitialDirectory = RecordingsPath;
+            using (var dialog = new OpenFileDialog())
+            {
+                dialog.InitialDirectory = RecordingsPath;
 
-			if (dialog.ShowDialog() == DialogResult.Cancel || dialog.FileName == "")
-				return;
+                if (dialog.ShowDialog() == DialogResult.Cancel || dialog.FileName == "")
+                    return;
 
-			game.recording = new Recording(dialog.FileName);
-			RecordingsPath = Directory.GetParent(dialog.FileName).FullName;
+                game.recording = new Recording(dialog.FileName);
+                RecordingsPath = Directory.GetParent(dialog.FileName).FullName;
 
-			string SSPath = RecordingsPath + "\\States\\" + dialog.SafeFileName;
-			if (File.Exists(SSPath))
-				game.recording.SS = new SaveState(SSPath);
+                string SSPath = RecordingsPath + "\\States\\" + dialog.SafeFileName;
+                if (File.Exists(SSPath))
+                    game.recording.SS = new SaveState(SSPath);
 
-			lblRecStatus.Text = "Loaded: " + dialog.SafeFileName;
+                lblRecStatus.Text = "Loaded: " + dialog.SafeFileName;
+            }
             numFrame.Maximum = cChannel.Frames - 1;
 		}
 
 		private void btnSaveRec_Click(object sender, EventArgs e)
 		{
-			SaveFileDialog dialog = new SaveFileDialog();
-			dialog.InitialDirectory = RecordingsPath;
+            using (var dialog = new SaveFileDialog())
+            {
+                dialog.InitialDirectory = RecordingsPath;
 
-			if (dialog.ShowDialog() == DialogResult.Cancel || dialog.FileName == "")
-				return;
+                if (dialog.ShowDialog() == DialogResult.Cancel || dialog.FileName == "")
+                    return;
 
-			game.recording.Save(dialog.FileName);
-			DirectoryInfo dir = new DirectoryInfo(dialog.FileName);
-			RecordingsPath = dir.Parent.FullName;
+                game.recording.Save(dialog.FileName);
+                DirectoryInfo dir = new DirectoryInfo(dialog.FileName);
 
-			if (game.recording.SS != null)
-				game.recording.SS.Save(dir.Parent.FullName + "\\States\\" + dir.Name);
+                RecordingsPath = dir.Parent.FullName;
 
+                if (game.recording.SS != null)
+                    game.recording.SS.Save(dir.Parent.FullName + "\\States\\" + dir.Name);
+            }
 			lblRecStatus.Text = "Saved Recording";
 		}
+
 		private void btnSetRecSS_Click(object sender, EventArgs e)
 		{
 			game.recording.SS = new SaveState(game);
@@ -290,6 +300,7 @@ namespace PR2_Speedrun_Tools
 				lblRecStatus.Text = "Playing Recording";
 			}
 		}
+
 		private void btnCurrentFrame_Click(object sender, EventArgs e)
 		{
             int target = game.RecFrame;
@@ -298,6 +309,7 @@ namespace PR2_Speedrun_Tools
 			numFrame_ValueChanged(numFrame, e);
 			txtNoSelect.Select();
 		}
+
 		// Edits!
 		private void btnDeleteFrame_Click(object sender, EventArgs e)
 		{
@@ -321,6 +333,7 @@ namespace PR2_Speedrun_Tools
 
 			txtNoSelect.Select();
 		}
+
 		private void btnInsertFrame_Click(object sender, EventArgs e)
 		{
 			byte iVal = 0;
@@ -338,6 +351,7 @@ namespace PR2_Speedrun_Tools
 
 			txtNoSelect.Select();
 		}
+
 		private void btnSetNextTo_Click(object sender, EventArgs e)
 		{
 			RecordedFrame sVal = cChannel.GetFrame((int)numFrame.Value);
@@ -367,6 +381,7 @@ namespace PR2_Speedrun_Tools
 
 			txtNoSelect.Select();
 		}
+
 		private void chkInput_CheckedChanged(object sender, EventArgs e)
 		{
 			if (!manual)
@@ -383,7 +398,6 @@ namespace PR2_Speedrun_Tools
 
 			txtNoSelect.Select();
 		}
-
 
 		// Start/Stop the level
 		private void btnPlay_Click(object sender, EventArgs e)
@@ -402,7 +416,7 @@ namespace PR2_Speedrun_Tools
 				theMap.enterLE();
 				btnPlay.Text = "Play Level";
 				game.paused = false;
-				lblPause.Text = "Game Paused";
+                lblPause.Text = "Game Paused";
 			}
 
 			txtNoSelect.Select();
@@ -440,6 +454,7 @@ namespace PR2_Speedrun_Tools
 			{
 				game.targetFPS = 9999;
 			}
+
 			#region "SaveStates"
 			else if (e.KeyCode >= Keys.D1 && e.KeyCode <= Keys.D9)
 			{
@@ -476,6 +491,7 @@ namespace PR2_Speedrun_Tools
 				}
 			}
 			#endregion
+
 			#region "Player input"
 			if (theMap.inLE && this.ActiveControl == txtNoSelect)
 			{
@@ -530,7 +546,6 @@ namespace PR2_Speedrun_Tools
 			#endregion
 		}
 
-
 		// Double-Clicking input checkboxes
 		private void chkInput_MouseDown(object sender, MouseEventArgs e)
 		{
@@ -570,9 +585,11 @@ namespace PR2_Speedrun_Tools
 
 		private void btnPartial_Click(object sender, EventArgs e)
 		{
-			PartialsForm frm = new PartialsForm();
-			frm.mov = cChannel;
-			frm.Show();
+            using (var frm = new PartialsForm())
+            {
+                frm.mov = cChannel;
+                frm.Show();
+            }
 		}
 
 		// Setting player stats
@@ -616,15 +633,17 @@ namespace PR2_Speedrun_Tools
 			}
 			else
 			{
-				FolderBrowserDialog dialog = new FolderBrowserDialog();
-				dialog.RootFolder = Environment.SpecialFolder.MyVideos;
-				dialog.SelectedPath = Environment.SpecialFolder.MyVideos.ToString() + "\\ImgSeq";
-				dialog.ShowDialog();
+                using (var dialog = new FolderBrowserDialog())
+                {
+                    dialog.RootFolder = Environment.SpecialFolder.MyVideos;
+                    dialog.SelectedPath = Environment.SpecialFolder.MyVideos.ToString() + "\\ImgSeq";
+                    dialog.ShowDialog();
 
-				recordingPath = dialog.SelectedPath;
-				recordingFrame = 0;
-				button1.Text = "Recording.";
-				recordingVideo = true;
+                    recordingPath = dialog.SelectedPath;
+                    recordingFrame = 0;
+                    button1.Text = "Recording.";
+                    recordingVideo = true;
+                }
 			}
 		}
 
@@ -706,7 +725,7 @@ namespace PR2_Speedrun_Tools
 				return;
 
 			// Available Items
-			Array.Resize(ref theMap.avItems, 8);
+			Array.Resize(ref theMap.avItems, 9);
 			int IID = 0;
 			for (int i = 0; i < 9; i++)
 			{
@@ -720,13 +739,10 @@ namespace PR2_Speedrun_Tools
 
 		}
 
-		// Player management
-		private int SelectedPlayer
-		{
-			get { return (int)numSelectedPlayer.Value - 1; }
-		}
+        // Player management
+        private int SelectedPlayer => (int)numSelectedPlayer.Value - 1;
 
-		private void numSelectedPlayer_ValueChanged(object sender, EventArgs e)
+        private void numSelectedPlayer_ValueChanged(object sender, EventArgs e)
 		{
 			manual = false;
 			chkCowboy.Checked = You.CowboyHat;
@@ -765,24 +781,26 @@ namespace PR2_Speedrun_Tools
 
 		private void ghostBtn_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog dialog = new OpenFileDialog();
-			dialog.InitialDirectory = RecordingsPath;
+            using (var dialog = new OpenFileDialog())
+            {
+                dialog.InitialDirectory = RecordingsPath;
 
-			if (dialog.ShowDialog() == DialogResult.Cancel || dialog.FileName == "")
-				return;
+                if (dialog.ShowDialog() == DialogResult.Cancel || dialog.FileName == "")
+                    return;
 
-			Recording rec = new Recording(dialog.FileName);
-			string SSPath = Directory.GetParent(dialog.FileName).FullName + "\\States\\" + dialog.SafeFileName;
-			if (File.Exists(SSPath))
-				rec.SS = new SaveState(SSPath);
-			else
-			{
-				MessageBox.Show("Ghost recordings must have a savestate.");
-				return;
-			}
+                Recording rec = new Recording(dialog.FileName);
+                string SSPath = Directory.GetParent(dialog.FileName).FullName + "\\States\\" + dialog.SafeFileName;
+                if (File.Exists(SSPath))
+                    rec.SS = new SaveState(SSPath);
+                else
+                {
+                    MessageBox.Show("Ghost recordings must have a savestate.");
+                    return;
+                }
 
-			game.AddGhost(rec);
-			lblRecStatus.Text = "Loaded Ghost: " + dialog.SafeFileName;
+                game.AddGhost(rec);
+                lblRecStatus.Text = "Loaded Ghost: " + dialog.SafeFileName;
+            }
 		}
 
 		private void removeGhostsBtn_Click(object sender, EventArgs e)
@@ -844,56 +862,54 @@ namespace PR2_Speedrun_Tools
 		{
 			Levels.Clear();
 			int i = -1;
-			do
-			{
-				if (!str.Contains("=") || str.StartsWith("hash="))
-					break;
-				string param = str.Substring(0, str.IndexOf("="));
-				string value = str.Substring(param.Length + 1, str.IndexOf("&") - param.Length - 1);
-				str = str.Substring(param.Length + value.Length + 2); // one for the =, one for the &
-				if (param.EndsWith((i + 1).ToString()))
-				{
-					i++;
-					Levels.Add(new LevelInfo());
-				}
-				param = param.Substring(0, param.Length - i.ToString().Length);
-				switch (param)
-				{
-					case "levelID":
-						Levels[i].ID = int.Parse(value);
-						break;
-					case "version":
-						Levels[i].Version = int.Parse(value);
-						break;
-					case "title":
-                        Levels[i].Title = WebUtility.UrlDecode(value);
-						break;
-					case "rating":
-						Levels[i].Rating = double.Parse(value.Replace(".", ","), System.Globalization.NumberStyles.Any);
-						break;
-					case "playCount":
-						Levels[i].PlayCount = int.Parse(value);
-						break;
-					case "minLevel":
-						Levels[i].MinRank = int.Parse(value);
-						break;
-					case "userName":
-						Levels[i].User = WebUtility.UrlDecode(value);
+            while (str.Contains("=") && !str.StartsWith("hash="))
+            {
+                string param = str.Substring(0, str.IndexOf("="));
+                string value = str.Substring(param.Length + 1, str.IndexOf("&") - param.Length - 1);
+                str = str.Substring(param.Length + value.Length + 2); // one for the =, one for the &
+                if (param.EndsWith((i + 1).ToString()))
+                {
+                    i++;
+                    Levels.Add(new LevelInfo());
+                }
+                param = param.Substring(0, param.Length - i.ToString().Length);
+                switch (param)
+                {
+                    case "levelID":
+                        Levels[i].ID = int.Parse(value);
                         break;
-					case "pass":
-						Levels[i].HasPassword = value != "";
-						break;
-					case "type":
-						Levels[i].Type = value;
-						break;
-					case "note":
-						Levels[i].Note = WebUtility.UrlDecode(value);
-						break;
-				}
-			} while (true);
+                    case "version":
+                        Levels[i].Version = int.Parse(value);
+                        break;
+                    case "title":
+                        Levels[i].Title = WebUtility.UrlDecode(value);
+                        break;
+                    case "rating":
+                        Levels[i].Rating = double.Parse(value.Replace(".", ","), System.Globalization.NumberStyles.Any);
+                        break;
+                    case "playCount":
+                        Levels[i].PlayCount = int.Parse(value);
+                        break;
+                    case "minLevel":
+                        Levels[i].MinRank = int.Parse(value);
+                        break;
+                    case "userName":
+                        Levels[i].User = WebUtility.UrlDecode(value);
+                        break;
+                    case "pass":
+                        Levels[i].HasPassword = value != "";
+                        break;
+                    case "type":
+                        Levels[i].Type = value;
+                        break;
+                    case "note":
+                        Levels[i].Note = WebUtility.UrlDecode(value);
+                        break;
+                }
+            }
 
-			// Display them
-			levelsList.Items.Clear();
+            // Display them
+            levelsList.Items.Clear();
 			if (Levels.Count == 0)
 			{
 				levelsList.Items.Add("NO LEVELS");
@@ -933,15 +949,17 @@ namespace PR2_Speedrun_Tools
 
 			if (loadLevelBtn.Text.StartsWith("S"))
 			{
-				SaveFileDialog dialog = new SaveFileDialog();
-				dialog.InitialDirectory = LevelsPath;
-				dialog.Filter = "Text Files (*.txt)|*.txt";
+                using (var dialog = new SaveFileDialog())
+                {
+                    dialog.InitialDirectory = LevelsPath;
+                    dialog.Filter = "Text Files (*.txt)|*.txt";
 
-				if (dialog.ShowDialog() == DialogResult.Cancel || dialog.FileName == "")
-					return;
+                    if (dialog.ShowDialog() == DialogResult.Cancel || dialog.FileName == "")
+                        return;
 
-				File.WriteAllText(dialog.FileName, data);
-			}
+                    File.WriteAllText(dialog.FileName, data);
+                }
+            }
 			else
 			{
 				theMap.enterLE(); // Idk what happens if you try to load a level mid-game
@@ -959,7 +977,7 @@ namespace PR2_Speedrun_Tools
 
 		private void tokenBtn_Click(object sender, EventArgs e)
 		{
-			Token_Manager form = new Token_Manager();
+			TokenManagerForm form = new TokenManagerForm();
 			form.ShowDialog();
 
 			if (General.Settings.SelectedUser == -1)
@@ -1017,6 +1035,7 @@ namespace PR2_Speedrun_Tools
 		{
 			MessageBox.Show(UploadLevel());
 		}
+
 		#region "Map Saving"
 		public string login_token = "";
 		public string username = "";
@@ -1173,24 +1192,15 @@ namespace PR2_Speedrun_Tools
             loadLevelBtn_Click(null, null);
         }
 
-        private void buttonLogin_Click(object sender, EventArgs e)
+        private void linkLabelToggleItems_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            using (var frm = new LoginForm())
-            {
-                if (frm.ShowDialog() == DialogResult.OK)
-                {
-                    Login(frm.Username, frm.Password);
-                }
-            }
-        }
+            bool hasChecked = false;
+            foreach (var chk in chkItems)
+                if (chk.Checked)
+                    hasChecked = true;
 
-        [DllImport("pr2secrets.dll", CharSet =CharSet.Auto)]
-        private static extern void HelloWorld();
-
-        private void Login(string username, string password)
-        {
-            HelloWorld();
-            //MessageBox.Show(RetrieveToken("asdf", "ghjk"));
+            foreach (var chk in chkItems)
+                chk.Checked = !hasChecked;
         }
     }
 }

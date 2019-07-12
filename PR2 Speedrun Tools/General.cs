@@ -35,11 +35,13 @@ namespace PR2_Speedrun_Tools
 
 		public static Bitsmap[] ItemB = new Bitsmap[] { null, new Bitsmap(Resources.Lasergun), new Bitsmap(Resources.Mine1)
         , new Bitsmap(Resources.Lightning), new Bitsmap(Resources.Item_Teleport), new Bitsmap(Resources.Item_Superjump)
-        , new Bitsmap(Resources.Item_Jetpack), new Bitsmap(Resources.Item_Speedy), new Bitsmap(Resources.Sword), new Bitsmap(Resources.Ice)};
+        , new Bitsmap(Resources.Item_Jetpack), new Bitsmap(Resources.Item_Speedy), new Bitsmap(Resources.Sword), new Bitsmap(Resources.Item_IceWave)};
 		public static Bitsmap laserPic = new Bitsmap(Resources.laser);
 		public static Bitsmap slashPic = new Bitsmap(Resources.Slash);
 		public static Bitsmap jetPic = new Bitsmap(Resources.Jet);
 		public static Bitsmap sparklePic = new Bitsmap(Resources.Sparkle);
+        public static Bitsmap ZapPic = new Bitsmap(Resources.LightningStrike);
+        public static Bitsmap WavePic = new Bitsmap(Resources.Wave);
 
 		public static Bitsmap[] Hatpic = new Bitsmap[] { new Bitsmap(20, 20), new Bitsmap(20, 20)
         , new Bitsmap(Resources.Exp), new Bitsmap(Resources.Kong), new Bitsmap(Resources.Propeller)

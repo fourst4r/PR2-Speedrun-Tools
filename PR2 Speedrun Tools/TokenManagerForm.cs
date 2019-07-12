@@ -1,18 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PR2_Speedrun_Tools
 {
-	public partial class Token_Manager : Form
+	public partial class TokenManagerForm : Form
 	{
-		public Token_Manager()
+		public TokenManagerForm()
 		{
 			InitializeComponent();
 		}
@@ -88,9 +81,9 @@ namespace PR2_Speedrun_Tools
 			if (!saveExit)
 			{
 				DialogResult result = MessageBox.Show("Do you want to save your changes?", "Save?", MessageBoxButtons.YesNoCancel);
-				if (result == System.Windows.Forms.DialogResult.Yes)
+				if (result == DialogResult.Yes)
 					saveBtn_Click(null, null);
-				else if (result == System.Windows.Forms.DialogResult.Cancel)
+				else if (result == DialogResult.Cancel)
 					e.Cancel = true;
 				else // Re-load settings
 				{

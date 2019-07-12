@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Collections.Generic;
+using System.Collections.Generic; 
 using System.Linq;
-using System.Text;
-using System.Runtime.InteropServices;
 
 namespace PR2_Speedrun_Tools
 {
-	public class Character
+    public class Character : Sprite
 	{
 		public string Name;
 		public Map course;
@@ -40,7 +38,6 @@ namespace PR2_Speedrun_Tools
 		public int RotateFrom = 0;
 
 		public Hat[] Hats = new Hat[0];
-
 		public int cItem = 0;
 
 		private int _Time;
@@ -70,13 +67,21 @@ namespace PR2_Speedrun_Tools
 		public string TimeStr;
 		public int finish_hit = 0;
 
-		public int playerID = 0;
+		public int tempID = 0;
+        public double RecoveryTimer = 0;
+        public string State;
+        protected bool isAprilFools;
+
+        public Character()
+        {
+            method_11("stand");
+        }
 
 		public void Reset(bool stats = true)
 		{
 			// Location
-			X = course.PStart[playerID].X;
-			Y = course.PStart[playerID].Y;
+			X = course.PStart[tempID].X;
+			Y = course.PStart[tempID].Y;
 			velX = 0;
 			velY = 0;
 			SuperJumpVel = 0;
@@ -96,7 +101,58 @@ namespace PR2_Speedrun_Tools
 			X += velX;
 			Y += velY;
 		}
-	}
+
+        // method_51
+        public void BeginRecovery(double time)
+        {
+            RecoveryTimer = time;
+            ENTER_FRAME -= RecoveryUpdate;
+            ENTER_FRAME += RecoveryUpdate;
+        }
+
+        // method_106
+        private void RecoveryUpdate()
+        {
+            //var _loc2_ = this.RecoveryTimer % 8;
+            //if (!this.var_304)
+            //{
+            //    if (_loc2_ >= 4)
+            //    {
+            //        alpha = 0.5;
+            //    }
+            //    else
+            //    {
+            //        alpha = 0.75;
+            //    }
+            //}
+            this.RecoveryTimer--;
+            if (this.RecoveryTimer <= 0)
+            {
+                this.EndRecovery();
+            }
+        }
+
+        protected virtual void EndRecovery()
+        {
+            //alpha = 1;
+            ENTER_FRAME -= RecoveryUpdate;
+        }
+
+        public virtual void BecomeInvincible(int time)
+        {
+            this.BeginRecovery(time);
+            //this.method_200(new class_126(33, 5000, this));
+        }
+
+        public void method_11(string newState)
+        {
+            if (State != newState)
+            {
+                State = newState;
+                // TODO: some other shit
+            }
+        }
+    }
 
 	public class LocalCharacter : Character
 	{
@@ -342,15 +398,18 @@ namespace PR2_Speedrun_Tools
 		public bool JumpHat = false;
 		public bool PartyHat = false;
 		public bool JiggHat = false;
+        public bool ArtiHat = false;
 
 		// State/mode things
-		public string State = "land";
+		public string Mode = "land";
 		public bool TouchingGround = true;
 		public bool crouching = false;
 		public int WaterTimer = 0;
 		public double Traction = 0.35;
 		public int HurtTimer = 0;
+        public int SquashedTimer;
 		public bool Invincible = false;
+        public bool frozenSolid;
 
 		// Keys
 		private RecordedFrame _input = new RecordedFrame();
@@ -423,8 +482,8 @@ namespace PR2_Speedrun_Tools
 		public new void Reset(bool stats = true)
 		{
 			// Location
-			X = course.PStart[playerID].X;
-			Y = course.PStart[playerID].Y;
+			X = course.PStart[tempID].X;
+			Y = course.PStart[tempID].Y;
 			// Safe
 			SafeX = (int)X;
 			SafeY = (int)Y;
@@ -441,7 +500,7 @@ namespace PR2_Speedrun_Tools
 			SuperJumpVel = 0;
 			TouchingGround = false;
 			// State
-			State = "land";
+			Mode = "land";
 			crouching = false;
 			WaterTimer = 0;
 			HurtTimer = 0;
@@ -529,20 +588,24 @@ namespace PR2_Speedrun_Tools
 					Invincible = false;
 			}
 
+            TestSquash(); 
+
             if (CowboyHat && course.Frames % 27 == 1)
                 SetHats();
 
 			if ((course.Frames > 54 || JumpHat))
 			{
 
-				// What go?
-				if (State == "land")
-					LandGo();
-				else if (State == "hurt")
-					HurtGo();
-				else if (State == "water")
-					WaterGo();
-				// freeze go is nothing
+                // What go?
+                if (Mode == "land")
+                    LandGo();
+                else if (Mode == "hurt")
+                    HurtGo();
+                else if (Mode == "water")
+                    WaterGo();
+                // freeze go is nothing
+                else if (Mode == "squashed")
+                    SquashedGo();
 			}
 
 			// Rotating
@@ -554,8 +617,8 @@ namespace PR2_Speedrun_Tools
 				Rotation += Rot;
 				if (Rotation == RotateTo)
 				{
-					// End rotation
-					State = "land";
+                    // End rotation
+                    SetMode("land");
 					// Rotate your position
 					if (RotateTo > RotateFrom)
 					{
@@ -713,6 +776,7 @@ namespace PR2_Speedrun_Tools
 				SuperJumpVel = 0;
 			}
 			// Item?
+            // TODO: should this be here?
 			jet = false;
 			if (SpaceK)
 				UseItem();
@@ -721,13 +785,42 @@ namespace PR2_Speedrun_Tools
 
 			Position();
 
-			TestBlocks();
+            if (!this.TouchingGround)
+            {
+                method_11("jump");
+            }
+            else if (this.SuperJumpVel > 25)
+            {
+                method_11("superJump");
+            }
+            else if (this.LeftK || this.RightK)
+            {
+                if (this.crouching)
+                {
+                    method_11("crouchWalk");
+                }
+                else
+                {
+                    method_11("run");
+                }
+            }
+            else if (this.crouching)
+            {
+                method_11("crouch");
+            }
+            else
+            {
+                method_11("stand");
+            }
+
+            TestBlocks();
 
 			// Cowboy check
 			if (CowboyHat && TouchingGround == false)
 			{
 				WaterTimer = 2;
-				State = "water";
+                SetMode("water");
+                method_11("swim");
 			}
 		}
 
@@ -737,8 +830,8 @@ namespace PR2_Speedrun_Tools
 			Position();
 			TestBlocks();
 			if (HurtTimer <= 0)
-				State = "land";
-		}
+                SetMode("land");
+        }
 
 		private void WaterGo()
 		{
@@ -789,9 +882,30 @@ namespace PR2_Speedrun_Tools
 					HoldingJump = true;
 				}
 				TargetVel = 0;
-				State = "land";
+                SetMode("land");
 			}
 		}
+
+        private void SquashedGo()
+        {
+            this.crouching = true;
+            this.LandGo();
+            this.SquashedTimer--;
+            if (this.SquashedTimer <= 0)
+            {
+                velY = -5;
+                this.SetMode("land");
+            }
+        }
+
+        public void onSquash()
+        {
+            if (this.Mode != "squashed" && RecoveryTimer <= 0)
+            {
+                this.SetMode("squashed");
+                //class_88.method_16(new SquashSound(), x, y, 0.66);
+            }
+        }
 
 		// Reappear (hit net/fall off course)
 		public void Reappear()
@@ -804,7 +918,40 @@ namespace PR2_Speedrun_Tools
 			Y = SY;
 			velX = 0;
 			velY = 0;
-		}
+            this.LoseLife();
+        }
+
+        private void LoseLife()
+        {
+            if (this.HurtTimer <= 0)
+            {
+                this.HurtTimer = 60;
+                BeginRecovery(65);
+                if (this.course.gameMode == "deathmatch")
+                {
+                    // TODO: this dm stuff
+                    //this.life--;
+                    //this.setLife(this.life);
+                    //if (this.life <= 0)
+                    //{
+                    //    this.course.finish();
+                    //}
+                }
+            }
+        }
+
+        public override void BecomeInvincible(int time)
+        {
+            base.BecomeInvincible(time);
+            this.HurtTimer = time;
+            this.Invincible = true;
+        }
+
+        protected override void EndRecovery()
+        {
+            base.EndRecovery();
+            this.Invincible = false;
+        }
 
 		// Item useage
 		private void UseItem()
@@ -847,7 +994,7 @@ namespace PR2_Speedrun_Tools
 				}
 				else
 					velX = velX - 15;
-				/// mmake the laser
+				// make the laser
 				int relX = 36;
 				int relY = -24;
 				if (RightK || LeftK)
@@ -865,7 +1012,7 @@ namespace PR2_Speedrun_Tools
 				}
 				if (dir == "left")
 					relX = -relX;
-				course.MakeLaser((int)X + relX, (int)Y + relY, playerID, dir, RotateFrom);
+				course.MakeLaser((int)X + relX, (int)Y + relY, tempID, dir, RotateFrom);
 			}
 			else if (cItem == Item.SWORD)
 			{
@@ -888,7 +1035,7 @@ namespace PR2_Speedrun_Tools
 				}
 				if (dir == "left")
 					relX = -relX;
-				course.MakeSlash((int)X + relX, (int)Y + relY, playerID, dir, RotateFrom);
+				course.MakeSlash((int)X + relX, (int)Y + relY, tempID, dir, RotateFrom);
 			}
 			else if (cItem == Item.MINE)
 			{
@@ -898,12 +1045,23 @@ namespace PR2_Speedrun_Tools
 				// TODO: Get correct placement position
 				course.PlaceBomb(bombX, bombY);
 			}
+            else if (cItem == Item.LIGHTNING)
+            {
+                course.MakeZap((int)X, (int)Y, tempID);
+                //course.Effects.Add(new Zap(this, true));
+            }
+            else if (cItem == Item.FREEZERAY)
+            {
+                //course.MakeWave()
+            }
 			// TODO: Freeze Ray!
 
-			ItemUses -= 1;
+            if (ItemUses > 0)
+			    ItemUses -= 1;
 			if (ItemUses == 0 && cItem != Item.SPEEDY)
 				LoseItem(); // Speedy is not lost until it wears out.
 		}
+
 		private void LoseItem()
 		{
 			if (cItem == Item.SPEEDY)
@@ -912,6 +1070,7 @@ namespace PR2_Speedrun_Tools
 			ItemUses = 0;
 			ItemTime = 0;
 		}
+
 		public void GiveItem()
 		{
 			if (course.avItems.Length == 0)
@@ -935,6 +1094,9 @@ namespace PR2_Speedrun_Tools
 
 			spaceReleased = false;
 		}
+
+        //public void GetZapped(int zapperID) => MakeZap;
+        //public void GetFrozenSolid() => course.Effects
 
 		// Hat give/take
 		public void GiveHat(Hat h)
@@ -998,7 +1160,8 @@ namespace PR2_Speedrun_Tools
 		Block midLeft;
 		Block highCenter;
 		Block topCenter;
-		private void testGround()
+
+        private void testGround()
 		{
 			// Solid check (required because of TopHat)
 			if (bottomCenter.IsSolid() && midCenter.IsSolid(this) == false)
@@ -1019,7 +1182,7 @@ namespace PR2_Speedrun_Tools
 			if (SantaHat)
 			{
 				_loc_3 = course.getBlock((int)X, (int)Y, RotateFrom, true);
-				if ((_loc_3.T == BlockID.Water && State != "water") || _loc_3.T == BlockID.Net)
+				if ((_loc_3.T == BlockID.Water && Mode != "water") || _loc_3.T == BlockID.Net)
 				{
 					if (!_loc_3.WasIced || _loc_3.TurnedToIce)
 					{
@@ -1058,12 +1221,12 @@ namespace PR2_Speedrun_Tools
 					crouching = true; // Referenced in Bump to determine Y pos
 
 				// You can swim through mid and highCenter. (Swim with head in blocks glitch)
-				if (midCenter.IsSolid(this) && course.getBlock(midCenter.X, midCenter.Y + 1, RotateFrom).IsSolid(this) == false && State != "water")
+				if (midCenter.IsSolid(this) && course.getBlock(midCenter.X, midCenter.Y + 1, RotateFrom).IsSolid(this) == false && Mode != "water")
 				{
 					midCenter.Bump(this);
 					setBlocks();
 				}
-				else if (highCenter.IsSolid(this) && course.getBlock(highCenter.X, highCenter.Y + 1, RotateFrom).IsSolid(this) == false && State != "water")
+				else if (highCenter.IsSolid(this) && course.getBlock(highCenter.X, highCenter.Y + 1, RotateFrom).IsSolid(this) == false && Mode != "water")
 				{
 					highCenter.Bump(this);
 					setBlocks();
@@ -1162,7 +1325,74 @@ namespace PR2_Speedrun_Tools
 			{
 				Speed = Speed + 1;
 			}
+            if (ArtiHat)
+            {
+                //cItem = Item.SPEEDY;
+                //SpeedBurst(this.var_99).var_335 = 30000;
+                //this.var_99.useItem();
+                //_loc6_ = class_30.course.timer;
+                //if (_loc6_.getTime() > 30)
+                //{
+                //    _loc6_.setTime(30);
+                //    _loc6_.init();
+                //}
+                //_loc7_ = new class_140(this, false, false);
+                ////_loc7_.transform.colorTransform = new ColorTransform(1, 1, 1, 1, 0, 0, 255, 0);
+                ////class_88.method_19(new Sound(new URLRequest("http://cdn.jiggmin.com/games/platform-racing-2/yeah.mp3")));
+                //class_30.course.musicSelection.var_216.method_629();
+            }
 		}
+
+        public void GetZapped(int zapperID)
+        {
+            if (!PartyHat && HurtTimer <= 0 && tempID != zapperID)
+                HurtTimer = 60;
+        }
+
+        // method_704
+        private void TestSquash()
+        {
+            if (velY > 0 && JiggHat)
+            {
+                //foreach(var player in this.course.var_40)
+                //{
+                //    if (player is RemoteCharacter && player.state != "crouch" 
+                //        && player.state != "crouchWalk" && player.x > x - 20 
+                //        && player.x < x + 20 && player.y > y + 35 && player.y < y + 65 
+                //        && player.rotation == this.rotation)
+                //    {
+                //        player.method_11("crouch");
+                //        //class_88.method_16(new SquashSound(), x, y, 0.66);
+                //        //this.socket.write("squash`" + _loc1_.tempID + "`" + x + "`" + y);
+                //        velY = -3;
+                //        this.TouchingGround = true;
+                //    }
+                //}
+            }
+        }
+
+        public void SetMode(string mode)
+        {
+            if (this.Mode != mode)
+            {
+                this.Mode = mode;
+                this.TargetVel = 0;
+                if (mode == "hurt")
+                {
+                    method_11("bumped");
+                    this.LoseLife();
+                }
+                if (mode == "water" && this.State != "bumped")
+                {
+                    method_11("swim");
+                }
+                if (mode == "squashed")
+                {
+                    this.SquashedTimer = 60;
+                    BeginRecovery(70);
+                }
+            }
+        }
 
 		// get hit (by bomb, laser, sword)
 		public void GetHit(double vX, double vY)
@@ -1174,12 +1404,13 @@ namespace PR2_Speedrun_Tools
 			{ // TODO: What happens to a running character when shot in the back with a laser, while wearing crown in deathmatch?
 				velX = velX + vX;
 				velY = velY + vY;
-				State = "hurt";
-				TargetVel = 0;
-				if (HurtTimer == 0)
-					HurtTimer = 55;
+                BeginRecovery(50);
+                if (!this.frozenSolid)
+                {
+                    this.SetMode("hurt");
+                }
 
-				if (Hats.Length > 0)
+                if (Hats.Length > 0)
 					Array.Resize(ref Hats, Hats.Length - 1);
 			}
 		}
@@ -1197,7 +1428,7 @@ namespace PR2_Speedrun_Tools
 			// Hats
 			Str += "," + PropellerHat + "," + CowboyHat + "," + SantaHat + "," + CrownHat + "," + TopHat + "," + JumpHat + "," + PartyHat + "," + JiggHat;
 			// State/mode things
-			Str += "," + State + "," + TouchingGround + "," + crouching + "," + WaterTimer + "," + HurtTimer;
+			Str += "," + Mode + "," + TouchingGround + "," + crouching + "," + WaterTimer + "," + HurtTimer;
 			// Keys
 			Str += "," + UpKP + "," + spaceReleased + "," + LeftKP + "," + RightKP + "," + SpaceKP;
 			// Jumps, vels
@@ -1253,7 +1484,7 @@ namespace PR2_Speedrun_Tools
 			JiggHat = Convert.ToBoolean(SS[20]);
 			// State/mode things
 			//Str &= "," & State & "," & TouchingGround & "," & crouching & "," & WaterTimer & "," & HurtTimer
-			State = (SS[21]);
+			Mode = (SS[21]);
 			TouchingGround = Convert.ToBoolean(SS[22]);
 			crouching = Convert.ToBoolean(SS[23]);
 			WaterTimer = Convert.ToInt32(SS[24]);

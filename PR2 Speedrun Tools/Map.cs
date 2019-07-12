@@ -6,7 +6,6 @@ using System.Text;
 
 namespace PR2_Speedrun_Tools
 {
-
     public class Map : IDisposable
     {
         // Normal (?) = 600, 540
@@ -49,6 +48,7 @@ namespace PR2_Speedrun_Tools
             Draw();
             CamSnap = false;
         }
+
         // Camera
         public int CamX;
         public int CamY;
@@ -151,7 +151,7 @@ namespace PR2_Speedrun_Tools
                             BlBit.DrawImage(ref BlockI[cBlock.T], dX, dY);
 
                         // Darken for frozen, fading, etc.
-                        if (cBlock.Health == 0 || cBlock.TurnedToIce || (cBlock.T == BlockID.Mine && cBlock.FadeTime > 0) || cBlock.Used[FollowChar.playerID])
+                        if (cBlock.Health == 0 || cBlock.TurnedToIce || (cBlock.T == BlockID.Mine && cBlock.FadeTime > 0) || cBlock.Used[FollowChar.tempID])
                         {
                             if (General.HQ && cBlock.TurnedToIce)
                                 BlBit.DrawImageA(ref General.BlockI[BlockID.Ice], dX, dY);
@@ -275,6 +275,25 @@ namespace PR2_Speedrun_Tools
                     xoff = 50;
                 BlBit.DrawImageA(ref General.slashPic, (slashes[i].X - CamX - xoff), (slashes[i].Y - CamY - 50));
             }
+            // Zaps
+            foreach (var zap in Zaps)
+            {
+                var bgBmp = new Bitmap(BlBit.Width, BlBit.Height);
+                var bgG = Graphics.FromImage(bgBmp);
+                var brush = new SolidBrush(Color.FromArgb((int)(255*zap.Alpha), Color.White));
+
+                bgG.FillRectangle(brush, 0, 0, BlBit.Width, BlBit.Height);
+                MG.DrawImage(bgBmp, (BlBit.Width/2)-CamX, (BlBit.Height/2)-CamY);
+
+                //if (zap.I)
+                //var zapPic = General.ZapPic.Clone();
+                //zapPic.SetAlpha(zap.Alpha);
+                //BlBit.DrawImageA(ref General.ZapPic, zap.X - CamX, zap.Y - CamY);
+
+                bgBmp.Dispose();
+                bgG.Dispose();
+                brush.Dispose();
+            }
             // Hats
             for (int i = 0; i < hats.Count; i++)
             {
@@ -289,7 +308,7 @@ namespace PR2_Speedrun_Tools
                     Graphics sG = Graphics.FromImage(sparkle);
 
                     sG.DrawImage(General.sparklePic.Bit, 0, 0);
-                    sG.FillRectangle(new SolidBrush(Color.FromArgb(255 - sparkles[i].TTV, BGC)), 0, 0, 22, 20);
+                    sG.FillRectangle(/*dispose not called*/new SolidBrush(Color.FromArgb(255 - sparkles[i].TTV, BGC)), 0, 0, 22, 20);
                     sparkle.MakeTransparent(sparkle.GetPixel(0, 0));
                     MG.DrawImage(sparkle, sparkles[i].X - CamX, sparkles[i].Y - CamY);
 
@@ -302,7 +321,10 @@ namespace PR2_Speedrun_Tools
                     sparkle.Dispose();
                 }
             }
+
+            
         }
+
         // FONTS
         private Font itemStuff = new Font("Arial", 12);
         private Font timeFont = new Font("Courier New", 14);
@@ -418,7 +440,6 @@ namespace PR2_Speedrun_Tools
             }
         }
         #endregion
-
 
         // BlockData
         private StringBuilder BlockData = new StringBuilder("");
@@ -544,6 +565,7 @@ namespace PR2_Speedrun_Tools
                 Draw();
             CamSnap = false;
         }
+
         public void enterLE()
         {
             inLE = true;
@@ -575,13 +597,14 @@ namespace PR2_Speedrun_Tools
                 if (value == null)
                     _FollowChar = -1;
                 else
-                    _FollowChar = value.playerID;
+                    _FollowChar = value.tempID;
             }
         }
+
         public void AddCharacter(Character c)
         {
             Chars.Add(c);
-            c.playerID = (Chars.Count - 1) % 4;
+            c.tempID = (Chars.Count - 1) % 4;
             if (!inLE)
             {
                 if (c.GetType() == typeof(LocalCharacter))
@@ -626,6 +649,7 @@ namespace PR2_Speedrun_Tools
             // 'Effects'
             LaserGo();
             SlashGo();
+            ZapGo();
             HatGo();
 
             // Sounds
@@ -639,7 +663,7 @@ namespace PR2_Speedrun_Tools
 
             if (max_time > 0 && max_time * 27 <= Frames)
             { // Out of time
-                MainChar.State = "end";
+                MainChar.Mode = "end";
             }
         }
 
@@ -665,6 +689,7 @@ namespace PR2_Speedrun_Tools
                 PushBlock(getBlock(MLoc[i].X, MLoc[i].Y, 0), DX, DY);
             }
         }
+
         // Handle vanishing and such
         public delegate void Ticker();
         private List<Ticker> faders = new List<Ticker>();
@@ -681,6 +706,7 @@ namespace PR2_Speedrun_Tools
                 faders.Add(toAdd);
             }
         }
+
         public void RemoveBlockEvent(Block B, int t)
         {
             Ticker toRemove = GetEvent(B, t);
@@ -690,6 +716,7 @@ namespace PR2_Speedrun_Tools
                 faders.RemoveAt(index);
             }
         }
+
         private Ticker GetEvent(Block B, int t)
         {
             if (t == EVENT_VANISH)
@@ -714,6 +741,7 @@ namespace PR2_Speedrun_Tools
             }
             return null;
         }
+
         private void HandleBlocks()
         {
             if (faders.Count == 0)
@@ -731,6 +759,39 @@ namespace PR2_Speedrun_Tools
                 i += 1;
             } while (i < lastCount);
         }
+
+        // Zaps
+        public List<Zap> Zaps = new List<Zap>();
+        private void ZapGo()
+        {
+            for (int iZ = 0; iZ < Zaps.Count; iZ++)
+            {
+                foreach (var character in Chars)
+                {
+                    if (character is LocalCharacter lc)
+                        lc.GetZapped(Zaps[iZ].ID);
+                }
+
+                if (Zaps[iZ].Alpha < .1f)
+                    Zaps.RemoveAt(iZ--);
+                else
+                {
+                    Zaps[iZ].Alpha -= .1f;
+                    Zaps[iZ].X = (int)Chars[Zaps[iZ].ID].X;
+                    Zaps[iZ].Y = (int)Chars[Zaps[iZ].ID].Y;
+                }
+            }
+        }
+
+        public void MakeZap(int x, int y, int pID)
+        {
+            var zap = new Zap();
+            zap.X = x;
+            zap.Y = y;
+            zap.ID = pID;
+            Zaps.Add(zap);
+        }
+
         // Lasers
         public List<Laser> lasers = new List<Laser>();
         private void LaserGo()
@@ -795,6 +856,7 @@ namespace PR2_Speedrun_Tools
                 iL += 1;
             } while (iL < lasers.Count);
         }
+
         private bool laserTouchingChar(Laser las, Character tChar)
         {
             int r = 0;
@@ -815,6 +877,7 @@ namespace PR2_Speedrun_Tools
 
             return false;
         }
+
         public void MakeLaser(int X, int Y, int ID, string Dir, int rot)
         {
             Laser nL = new Laser();
@@ -825,6 +888,21 @@ namespace PR2_Speedrun_Tools
             nL.rot = rot;
             lasers.Add(nL);
         }
+
+        // Waves
+        public List<Laser> Waves = new List<Laser>();
+
+        public void MakeWave(int x, int y, int id, string dir, int rot)
+        {
+            Laser nL = new Laser();
+            nL.X = x;
+            nL.Y = y;
+            nL.Dir = dir;
+            nL.ID = id;
+            nL.rot = rot;
+            Waves.Add(nL);
+        }
+
         // Slashes
         public List<Slash> slashes = new List<Slash>();
         int PrevNum;
@@ -844,7 +922,7 @@ namespace PR2_Speedrun_Tools
             for (int i = 0; i < slashes.Count; i++)
             {
                 // check for hitting you (don't need to check for others!)
-                if (slashes[i].ID != MainChar.playerID)
+                if (slashes[i].ID != MainChar.tempID)
                 {
                     if (slashTouchingchar(slashes[i], MainChar))
                     {
@@ -866,9 +944,14 @@ namespace PR2_Speedrun_Tools
                     // blow up mines, hit bricks
                     if (Bloc.T == 9 || Bloc.T == 4)
                         DeleteBlock(Bloc.X, Bloc.Y);
+                    else if (Bloc.T == BlockID.Vanish)
+                        Bloc.Vanish();
+                    else if (Bloc.T == BlockID.Crumble)
+                        Bloc.Health -= 10;
                 }
             }
         }
+
         private bool slashTouchingchar(Slash sla, Character tChar)
         {
             int r = 0;
@@ -889,6 +972,7 @@ namespace PR2_Speedrun_Tools
 
             return true;
         }
+
         public void MakeSlash(int X, int Y, int ID, string Dir, int rot)
         {
             Slash nS = new Slash();
@@ -914,6 +998,7 @@ namespace PR2_Speedrun_Tools
             }
 
         }
+
         // Hats
         public List<Hat> hats = new List<Hat>();
         private void HatGo()
@@ -951,6 +1036,7 @@ namespace PR2_Speedrun_Tools
                 i += 1;
             } while (i < hats.Count);
         }
+
         private bool hatTouchingChar(Hat hat, Character tChar)
         {
             if (hat.X - 20 < tChar.X + 11 && hat.X + 20 > tChar.X - 11)
@@ -963,6 +1049,7 @@ namespace PR2_Speedrun_Tools
 
             return false;
         }
+
         public void MakeHat(int X, int Y, int ID, Color clr, int ServID, int rot)
         {
             Hat nH = new Hat();
@@ -1000,6 +1087,7 @@ namespace PR2_Speedrun_Tools
             }
             return false;
         }
+
         // Camera follow character
         public void FollowCharacter(ref int CamX, ref int CamY)
         {
@@ -1029,7 +1117,6 @@ namespace PR2_Speedrun_Tools
             CamX += (int)ChX;
             CamY += (int)ChY;
         }
-
 
         // Add a block to the level (increase BlockCount)
         public void AddBlock(int X, int Y, int T)
@@ -1237,6 +1324,7 @@ namespace PR2_Speedrun_Tools
                 decMapID(mID);
             }
         }
+
         private Block dataToBlock(string bData)
         {
             string[] p = bData.Split(';');
@@ -1252,6 +1340,7 @@ namespace PR2_Speedrun_Tools
 
             return ret;
         }
+
         private void decMapID(int fromID)
         {
             for (int iX = 0; iX < Blocks.Count; iX++)
@@ -1297,6 +1386,7 @@ namespace PR2_Speedrun_Tools
                 }
             }
         }
+
         // Push a block
         public void PushBlock(Block Bloc, int X, int Y)
         {
@@ -1310,6 +1400,7 @@ namespace PR2_Speedrun_Tools
                 MoveBlock(Bloc.X, Bloc.Y, X, Y);
             }
         }
+
         // Place a bomb
         public void PlaceBomb(int X, int Y)
         {
@@ -1325,7 +1416,6 @@ namespace PR2_Speedrun_Tools
                 AddBlockEvent(Bloc, EVENT_PLACE);
             }
         }
-
 
         // Make sure a given index exists in the Blocks list
         private void CreateIndex(int X, int Y)
@@ -1384,6 +1474,7 @@ namespace PR2_Speedrun_Tools
                 }
             }
         }
+
         // Check if a block exists
         public bool BlockExists(int X, int Y, bool IndexR)
         {
@@ -1419,6 +1510,7 @@ namespace PR2_Speedrun_Tools
             // It exists if it doesn't not.
             return true;
         }
+
         // get Block by it's real X and Y
         public Block getBlock(int LocX, int LocY, int Rot, bool Pixels = false)
         {
@@ -1446,6 +1538,7 @@ namespace PR2_Speedrun_Tools
             }
             return TheBlock;
         }
+
         // Is a player in a given block space?
         private bool PlayerInside(int x, int y)
         {
@@ -1457,7 +1550,6 @@ namespace PR2_Speedrun_Tools
             }
             return false;
         }
-
 
         // get the level's data
         public string GetUploadData(bool Hsh, bool keepArt = true)
@@ -1506,6 +1598,7 @@ namespace PR2_Speedrun_Tools
 
             return LData;
         }
+
         public string GetDownloadData(bool Hash = true)
         {
             // Download hash is dependent on the order of things. So, by convention, we will use:
@@ -1515,7 +1608,7 @@ namespace PR2_Speedrun_Tools
             string ret = "level_ID=" + ID + "&version=" + version + "&time=" + timestamp + "&user_ID=" + userID +
                 "&title=" + Title + "&note=" + note + "&credits=" + credits + "&min_level=" + min_level +
                 "&has_pass=" + (hasPass ? 1 : 0) + "&live=" + live + "&gameMode=" + gameMode + "&data=" + GetDataParam() +
-                "&items=" + itemStuff + "&song=" + song + "&max_time=" + max_time + "&gravity=" + Gravity +
+                "&items=" /* todo */ + "&song=" + song + "&max_time=" + max_time + "&gravity=" + Gravity +
                 "&cowboyChance=" + cowboyChance;
 
             if (Hash)
@@ -1634,7 +1727,7 @@ namespace PR2_Speedrun_Tools
             }
 
             // Music isn't always user-set
-            if (SongStr != "")
+            if (SongStr != "" && SongStr != "random")
                 song = Convert.ToInt32(SongStr);
             else
                 song = -1; // PR2's internal value is unknown. It is not -1.
@@ -1685,6 +1778,7 @@ namespace PR2_Speedrun_Tools
             for (int i = 0; i < avItemStr.Length; i++)
                 avItems[i] = Item.NameToID(avItemStr[i]);
         }
+
         private void LoadBlocks(string bData)
         {
             pX = 0;
@@ -1718,7 +1812,11 @@ namespace PR2_Speedrun_Tools
                 {
                     if (BCS[2] == "")
                         BCS[2] = "0"; // Blank string means 0
-                    LpT = Convert.ToInt32(BCS[2]);
+                    if (BCS[2].Length == 3)
+                        // fix for when bls made blocks start at 100
+                        LpT = Convert.ToInt32(BCS[2]) - 100;
+                    else
+                        LpT = Convert.ToInt32(BCS[2]);
                 }
                 if (BCS.Length > 1)
                 {
@@ -1733,6 +1831,7 @@ namespace PR2_Speedrun_Tools
                 AddBlock(LpX, LpY, LpT);
             }
         }
+
         public string GetDataParam(bool keepArt = true)
         {
             string BlockD = BlockData.ToString();
@@ -1767,6 +1866,7 @@ namespace PR2_Speedrun_Tools
 
             return Data;
         }
+
         public string GetDownloadHash(string dataStr = "")
         {
             if (dataStr == "")
@@ -1866,6 +1966,7 @@ namespace PR2_Speedrun_Tools
 
             return Str;
         }
+
         private string generateSSMovedBlockData()
         {
             // Block types that can be moved/placed/deleted: Brick, Crumble, Move, Push, Mine
@@ -1900,6 +2001,7 @@ namespace PR2_Speedrun_Tools
 
             return string.Join(",", dataList);
         }
+
         private string generateSSUsedBlockData()
         {
             StringBuilder str = new StringBuilder("");
@@ -1945,6 +2047,7 @@ namespace PR2_Speedrun_Tools
                 str.Remove(str.Length - 1, 1);
             return str.ToString();
         }
+
         private string generateSSEffectData()
         {
             List<string> dataList = new List<string>();
@@ -2057,6 +2160,7 @@ namespace PR2_Speedrun_Tools
                     (Chars[i - 6] as LocalCharacter).UseSSData(Str[i]);
             }
         }
+
         private void useSSMovedBlockData(string Str)
         {
             // Block types that can be moved/placed/deleted: Brick, Crumble, Move, Push, Mine
@@ -2109,6 +2213,7 @@ namespace PR2_Speedrun_Tools
                 AddBlock(LpX, LpY, LpT);
             }
         }
+
         private void useSSUsedBlockData(string Str)
         {
             faders.Clear();
@@ -2173,8 +2278,7 @@ namespace PR2_Speedrun_Tools
                     AddBlockEvent(cB, EVENT_BUMP);
                     if (ID >= bStr.Length)
                         continue;
-                    int val;
-                    if (int.TryParse(bStr[ID], out val))
+                    if (int.TryParse(bStr[ID], out int val))
                     {
                         cB.startBumping = val;
                         ID++;
@@ -2204,6 +2308,7 @@ namespace PR2_Speedrun_Tools
                     cB.BumpVel = Convert.ToDouble(bStr[ID].Substring(1));
             }
         }
+
         private void useSSEffectData(string Str)
         {
             string[] effSS = Str.Split('`');
@@ -2262,7 +2367,6 @@ namespace PR2_Speedrun_Tools
                 }
             }
         }
-
 
         #region "IDisposable Support"
         private bool disposedValue;   //; i < detect redundant calls

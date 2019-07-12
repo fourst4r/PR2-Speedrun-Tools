@@ -111,6 +111,9 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\portable-net45+win8+wp8+wpa81\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -124,7 +127,7 @@
     <Compile Include="Bitsmap.cs" />
     <Compile Include="Block.cs" />
     <Compile Include="Character.cs" />
-    <Compile Include="CodeFile1.cs" />
+    <Compile Include="General.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -153,11 +156,12 @@
     <Compile Include="RecordedFrame.cs" />
     <Compile Include="RunSplicer.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="Token Manager.cs">
+    <Compile Include="Sprite.cs" />
+    <Compile Include="TokenManagerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Token Manager.Designer.cs">
-      <DependentUpon>Token Manager.cs</DependentUpon>
+    <Compile Include="TokenManagerForm.Designer.cs">
+      <DependentUpon>TokenManagerForm.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
@@ -178,9 +182,10 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Token Manager.resx">
-      <DependentUpon>Token Manager.cs</DependentUpon>
+    <EmbeddedResource Include="TokenManagerForm.resx">
+      <DependentUpon>TokenManagerForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -438,6 +443,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Egg.PNG" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Item_Lightning.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Lightning.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Item_IceWave.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\IceWave.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\LightningStrike.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Wave.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

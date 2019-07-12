@@ -451,9 +451,9 @@ namespace PR2_Speedrun_Tools
             }
             else if (T == BlockID.Item)
             {
-                if (!Used[tChar.playerID])
+                if (!Used[tChar.tempID])
                 {
-                    Used[tChar.playerID] = true;
+                    Used[tChar.tempID] = true;
                     tChar.GiveItem();
                 }
             }
@@ -461,9 +461,9 @@ namespace PR2_Speedrun_Tools
                 tChar.GiveItem();
             else if (T == BlockID.Happy)
             {
-                if (!Used[tChar.playerID])
+                if (!Used[tChar.tempID])
                 {
-                    Used[tChar.playerID] = true;
+                    Used[tChar.tempID] = true;
                     tChar.SpStat += 5;
                     tChar.AccStat += 5;
                     tChar.JumpStat += 5;
@@ -472,9 +472,9 @@ namespace PR2_Speedrun_Tools
             }
             else if (T == BlockID.Sad)
             {
-                if (!Used[tChar.playerID])
+                if (!Used[tChar.tempID])
                 {
-                    Used[tChar.playerID] = true;
+                    Used[tChar.tempID] = true;
                     tChar.SpStat -= 5;
                     tChar.AccStat -= 5;
                     tChar.JumpStat -= 5;
@@ -491,7 +491,7 @@ namespace PR2_Speedrun_Tools
             else if (T == BlockID.GravRight)
             {
                 // Set mode (tChar.State) to freeze. (While frozen, the "Go" is nothing.)
-                tChar.State = "freeze";
+                tChar.SetMode("freeze");
                 // tChar.Speed is set to 0
                 tChar.velY = 0;
                 tChar.velX = 0;
@@ -500,14 +500,14 @@ namespace PR2_Speedrun_Tools
             }
             else if (T == BlockID.GravLeft)
             {
-                tChar.State = "freeze";
+                tChar.SetMode("freeze");
                 tChar.velY = 0;
                 tChar.velX = 0;
                 tChar.RotateTo = tChar.RotateFrom - 90;
             }
             else if (T == BlockID.Vanish)
                 Vanish();
-            else if (T == BlockID.Time && !Used[tChar.playerID])
+            else if (T == BlockID.Time && !Used[tChar.tempID])
             {
                 if (course.max_time == 0)
                 {
@@ -517,13 +517,13 @@ namespace PR2_Speedrun_Tools
                 {
                     course.max_time += 10;
                 }
-                Used[tChar.playerID] = true;
+                Used[tChar.tempID] = true;
             }
             else if (T == BlockID.Heart)
             {
-                if (!Used[tChar.playerID])
+                if (!Used[tChar.tempID])
                 {
-                    Used[tChar.playerID] = true;
+                    Used[tChar.tempID] = true;
                     tChar.HurtTimer = 27 * 5; // should use current frame rate, not 27
                     tChar.Invincible = true;
                 }
@@ -642,12 +642,9 @@ namespace PR2_Speedrun_Tools
             {
                 if (T == BlockID.Water)
                 {
-                    if (tChar.TouchingGround == false && tChar.State != "hurt")
+                    if (tChar.TouchingGround == false && tChar.Mode != "freeze" && tChar.Mode != "hurt")
                     {
-                        if (tChar.State != "water")
-                            tChar.TargetVel = 0;
-
-                        tChar.State = "water";
+                        tChar.SetMode("water");
                         tChar.WaterTimer = 2;
                     }
                     else
@@ -669,9 +666,6 @@ namespace PR2_Speedrun_Tools
                 {
                     if (tChar.SafeSegX != X || Y > tChar.SafeSegY || Y + 2 < tChar.SafeSegY)
                         tChar.Reappear();
-
-                    if (tChar.HurtTimer <= 0)
-                        tChar.HurtTimer = 60;
                 }
             }
             // Vanish blocks that are re-appearing should not fully re-appear while tChar are inside them TODO: (see Block.Vanish)
