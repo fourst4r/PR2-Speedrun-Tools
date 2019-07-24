@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace PR2_Speedrun_Tools
 {
-    public class Character : Sprite
+    public class Character
 	{
 		public string Name;
 		public Map course;
@@ -106,8 +106,8 @@ namespace PR2_Speedrun_Tools
         public void BeginRecovery(double time)
         {
             RecoveryTimer = time;
-            ENTER_FRAME -= RecoveryUpdate;
-            ENTER_FRAME += RecoveryUpdate;
+            //ENTER_FRAME -= RecoveryUpdate;
+            //ENTER_FRAME += RecoveryUpdate;
         }
 
         // method_106
@@ -135,7 +135,7 @@ namespace PR2_Speedrun_Tools
         protected virtual void EndRecovery()
         {
             //alpha = 1;
-            ENTER_FRAME -= RecoveryUpdate;
+            //ENTER_FRAME -= RecoveryUpdate;
         }
 
         public virtual void BecomeInvincible(int time)
@@ -276,6 +276,7 @@ namespace PR2_Speedrun_Tools
 			MG.DrawImage(General.FeetC, DX - 10, DY - 8 - fY);
 			MG.DrawImage(General.Feet, DX - 10, DY - 8 - fY);
 
+            nMatrix.Dispose();
 			MG.Transform = fMatrix;
 			// ITEM
 			if (cItem != 0)

@@ -25,10 +25,13 @@ namespace PR2_Speedrun_Tools
             MG.Dispose(); MG = null;
 			recording = null;
 		}
-		#endregion
+        #endregion
+
+        private Sprite _sprite;
 
 		public Game_ART(int displayWidth = 540, int displayHeight = 405)
 		{
+            _sprite = new Sprite(General.ZapPic.Bit);
 			img = new Bitsmap(displayWidth, displayHeight);
 			MG = Graphics.FromImage(img.Bit);
 
@@ -68,7 +71,6 @@ namespace PR2_Speedrun_Tools
 		{
 			img = new Bitsmap(displayWidth, displayHeight);
 			MG = Graphics.FromImage(img.Bit);
-
 			map.ResizeView(displayWidth, displayHeight);
 
 			ReDraw();
@@ -80,14 +82,15 @@ namespace PR2_Speedrun_Tools
 		public void DrawFrame()
 		{
 			map.Draw();
-			// Ghosts
-			if (Ghosts != null)
+
+            // Ghosts
+            if (Ghosts != null)
 			{
 				for (int i = 0; i < Ghosts.Count; i++)
 					map.DrawCharacter(Ghosts[i]);
 			}
 
-			ReDraw();
+            ReDraw();
 		}
 
 		public void ReDraw()

@@ -1615,32 +1615,7 @@ namespace PR2_Speedrun_Tools
                 ret += GetDownloadHash(ret);
             return ret;
         }
-        //private Function getBlocksData(ref B  Block, ref pX  int, ref pY  int, ref pT  int)
-        //    // Blocks that are under
-        //    int cD  string = ""
-        //    for (int i  int = 0; i < B.Under.Count - 1
-        //        cD = B.X - pX & ";" & B.Y - pY
-        //        pX = B.X
-        //        pY = B.Y
-        //        if ( B.Under[i] != pT ) {
-        //            cD &= ";" & B.Under[i]
-        //            pT = B.Under[i]
-        //        }
 
-        //        cD &= ","
-        //    }
-
-        //    cD &= B.X - pX & ";" & B.Y - pY
-        //    pX = B.X
-        //    pY = B.Y
-        //    if ( B.T != pT ) {
-        //        cD &= ";" & B.T
-        //        pT = B.T
-        //    }
-
-        //    cD &= ","
-        //    return cD
-        //}
         // Load level
         public void LoadLevel(string LvlData)
         {
@@ -1872,11 +1847,11 @@ namespace PR2_Speedrun_Tools
             if (dataStr == "")
             {
                 string data = GetDownloadData(false);
-                return General.GenerateHash(version.ToString() + ID + data + "******");
+                return General.GenerateHash(version.ToString() + ID + data + "84ge5tnr");
             }
             else
             {
-                return General.GenerateHash(version.ToString() + ID + dataStr + "******");
+                return General.GenerateHash(version.ToString() + ID + dataStr + "84ge5tnr");
             }
         }
 

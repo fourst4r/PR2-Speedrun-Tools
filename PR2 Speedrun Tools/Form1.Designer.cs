@@ -540,7 +540,6 @@
             // 
             // uploadBtn
             // 
-            this.uploadBtn.Enabled = false;
             this.uploadBtn.Location = new System.Drawing.Point(17, 444);
             this.uploadBtn.Name = "uploadBtn";
             this.uploadBtn.Size = new System.Drawing.Size(75, 23);
