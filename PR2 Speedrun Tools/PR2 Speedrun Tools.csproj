@@ -137,6 +137,7 @@
     <Compile Include="Game_ART.cs" />
     <Compile Include="Hat.cs" />
     <Compile Include="Item.cs" />
+    <Compile Include="Itembls.cs" />
     <Compile Include="LevelCompressor.cs" />
     <Compile Include="LoginForm.cs">
       <SubType>Form</SubType>

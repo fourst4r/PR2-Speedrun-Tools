@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace PR2_Speedrun_Tools
 {
@@ -55,6 +52,7 @@ namespace PR2_Speedrun_Tools
         public int T = BlockID.BB0;
         public bool TurnedToIce = false;
         public bool WasIced = false;
+        public bool frozen;
         public int FreezeTime = 0;
         public int FadeTime = 0;
         public int Health = 10;
@@ -180,6 +178,10 @@ namespace PR2_Speedrun_Tools
 
         public void Freeze()
         {
+            //if (!this.frozen) {
+            //    this.frozen = true;
+
+            //}
             TurnedToIce = true;
             WasIced = true;
             FreezeTime = 36;

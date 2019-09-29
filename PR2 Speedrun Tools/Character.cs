@@ -195,7 +195,7 @@ namespace PR2_Speedrun_Tools
 			{
 				if (!TouchingGround)
 				{
-					if (WaterTimer <= 0)
+					if (Mode != "water")
 						fMatrix.RotateAt(-10, new PointF(DX, DY - 5));
 					else
 						fMatrix.RotateAt(-1, new PointF(DX, DY - 5));
@@ -249,7 +249,7 @@ namespace PR2_Speedrun_Tools
 			// FEET
 			PointF fRotPointH = new PointF(0, 22);
 			float sRot = 0;
-			if (!TouchingGround && WaterTimer > 0)
+			if (!TouchingGround && Mode == "water")
 			{
 				fRotPointH = new PointF(-5, 8);
 				sRot = 20;
@@ -324,7 +324,7 @@ namespace PR2_Speedrun_Tools
 			// Feet rotations
 			if (!TouchingGround)
 			{
-				if (WaterTimer > 0)
+				if (Mode == "water")
 				{
 					if (fRot > 25)
 						fRot = 24.9f;
@@ -425,6 +425,12 @@ namespace PR2_Speedrun_Tools
 		private void GetInput()
 		{
 			_input.kValue = _nextInput.kValue;
+
+            if (RightK)
+                ScaleX = 1;
+            if (LeftK)
+                ScaleX = -1;
+            //if (SpaceK)
 		}
 
 		public bool UpK
@@ -719,15 +725,9 @@ namespace PR2_Speedrun_Tools
 			GetInput();
 			// Left/right
 			if (RightK)
-			{
-				ScaleX = 1;
 				TargetVel += Accel;
-			}
 			if (LeftK)
-			{
-				ScaleX = -1;
 				TargetVel -= Accel;
-			}
 			if (!RightK && !LeftK)
 				TargetVel = 0;
 			// Up
@@ -742,7 +742,7 @@ namespace PR2_Speedrun_Tools
 				else if (HoldingJump)
 				{
 					velY += JumpVel;
-					JumpVel = JumpVel * 0.75;
+                    JumpVel *= 0.75;
 				}
 			}
 			else
@@ -760,7 +760,7 @@ namespace PR2_Speedrun_Tools
 					else
 					{
 						if (SuperJumpVel < 100)
-							SuperJumpVel = SuperJumpVel + 2;
+                            SuperJumpVel += 2;
 						if (SuperJumpVel > 25)
 							TargetVel = 0;
 					}
@@ -785,6 +785,7 @@ namespace PR2_Speedrun_Tools
 				spaceReleased = true;
 
 			Position();
+            //ScaleY = 1;
 
             if (!this.TouchingGround)
             {
@@ -844,15 +845,9 @@ namespace PR2_Speedrun_Tools
 				spaceReleased = true;
 			// TODO: SpaceK is below movement stuffs in LandGo. Is this one backwards?
 			if (RightK)
-			{
-				ScaleX = 1;
 				velX += Accel * 0.5;
-			}
 			if (LeftK)
-			{
-				ScaleX = -1;
 				velX -= Accel * 0.5;
-			}
 			if (DownK)
 				velY += Accel * 0.65;
 			if (UpK)
@@ -871,7 +866,7 @@ namespace PR2_Speedrun_Tools
 			X += velX;
 			Y += velY;
 			TestBlocks();
-			WaterTimer -= 1;
+			WaterTimer--;
 			if (CowboyHat && !TouchingGround)
 				WaterTimer = 1;
 			if (WaterTimer <= 0)
@@ -882,7 +877,7 @@ namespace PR2_Speedrun_Tools
 					JumpVel = -Jump * 0.5;
 					HoldingJump = true;
 				}
-				TargetVel = 0;
+				//TargetVel = 0;
                 SetMode("land");
 			}
 		}
@@ -1176,23 +1171,23 @@ namespace PR2_Speedrun_Tools
 		}
 		private void TestBlocks()
 		{
-			Block _loc_3;
+			Block _loc1_;
 			setBlocks();
 			testGround();
 			bool Frz = false;
 			if (SantaHat)
 			{
-				_loc_3 = course.getBlock((int)X, (int)Y, RotateFrom, true);
-				if ((_loc_3.T == BlockID.Water && Mode != "water") || _loc_3.T == BlockID.Net)
+				_loc1_ = course.getBlock((int)X, (int)Y, RotateFrom, true);
+				if (_loc1_.T == BlockID.Water && Mode != "water" || _loc1_.T == BlockID.Net)
 				{
-					if (!_loc_3.WasIced || _loc_3.TurnedToIce)
-					{
-						_loc_3.StandOn(this);
-						setBlocks();
-                        if (!_loc_3.WasIced)
-						    Frz = true;
-					}
-				}
+                    //_loc1_.StandOn(this);
+                    if (!_loc1_.WasIced || _loc1_.TurnedToIce) {
+                        _loc1_.StandOn(this);
+                        setBlocks();
+                        if (!_loc1_.WasIced)
+                            Frz = true;
+                    }
+                }
 			}
 			// Right/left pushing never happens on a freeze. I really don't get how PR2 does it.
 			if (!Frz)
