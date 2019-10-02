@@ -651,11 +651,13 @@ namespace PR2_Speedrun_Tools
 		private void pnlGame_MouseDown(object sender, MouseEventArgs e)
 		{
 			txtNoSelect.Select();
-			if (Control.ModifierKeys == Keys.Shift)
-			{
-				You.X = theMap.CamX + e.X;
-				You.Y = theMap.CamY + e.Y;
-			}
+            if (Control.ModifierKeys == Keys.Shift) 
+            {
+                You.X = theMap.CamX + e.X;
+                You.Y = theMap.CamY + e.Y;
+            }
+            else if (Control.ModifierKeys == Keys.Control)
+                You.course.MakeHat(theMap.CamX + e.X, theMap.CamY + e.Y, 3, Color.White, 1, 0);
             else if (tabControl1.SelectedTab == tabLE && theMap.inLE)
                 LE_Action(e);
         }
@@ -666,12 +668,22 @@ namespace PR2_Speedrun_Tools
                 LE_Action(e);
         }
 
+        private void ScreenToWorld(ref int x, ref int y, int rot)
+        {
+            x += theMap.CamX;
+            y += theMap.CamY;
+            General.RotatePoint(ref x, ref y, rot);
+            x = (int)Math.Floor(x / 30.0);
+            y = (int)Math.Floor(y / 30.0);
+        }
+
         private void LE_Action(MouseEventArgs e)
         {
+            int x = e.X, y = e.Y;
+            ScreenToWorld(ref x, ref y, -You.Rotation);
+
             if (e.Button == MouseButtons.Left && listViewBlocks.SelectedIndices.Count != 0)
             {
-                var x = (int)Math.Floor((e.X + theMap.CamX) / 30.0);
-                var y = (int)Math.Floor((e.Y + theMap.CamY) / 30.0);
                 var t = listViewBlocks.SelectedIndices[0];
                 if (theMap.getBlock(x, y, 0).T == 99)
                     theMap.AddBlock(x, y, t);
@@ -683,8 +695,6 @@ namespace PR2_Speedrun_Tools
             }
             else if (e.Button == MouseButtons.Right)
             {
-                var x = (int)Math.Floor((e.X + theMap.CamX) / 30.0);
-                var y = (int)Math.Floor((e.Y + theMap.CamY) / 30.0);
                 if (theMap.getBlock(x, y, 0).T != 99)
                     theMap.DeleteBlock(x, y);
             }
@@ -1201,6 +1211,18 @@ namespace PR2_Speedrun_Tools
 
             foreach (var chk in chkItems)
                 chk.Checked = !hasChecked;
+        }
+
+        private void buttonSaveToFile_Click(object sender, EventArgs e)
+        {
+            using (var sfd = new SaveFileDialog()) {
+                sfd.InitialDirectory = Directory.GetCurrentDirectory();
+                sfd.Filter = "Text files (*.txt)|*.txt";
+                sfd.DefaultExt = ".txt";
+                if (sfd.ShowDialog(this) == DialogResult.OK) {
+                    File.WriteAllText(sfd.FileName, theMap.GetUploadData(false));
+                }
+            }
         }
     }
 }

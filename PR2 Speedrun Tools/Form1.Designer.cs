@@ -155,6 +155,7 @@
             this.chkUp = new System.Windows.Forms.CheckBox();
             this.btnPlay = new System.Windows.Forms.Button();
             this.tabLE = new System.Windows.Forms.TabPage();
+            this.buttonSaveToFile = new System.Windows.Forms.Button();
             this.listViewBlocks = new System.Windows.Forms.ListView();
             this.colHdrBlock = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.imageListBlocks = new System.Windows.Forms.ImageList(this.components);
@@ -1341,6 +1342,7 @@
             // 
             // tabLE
             // 
+            this.tabLE.Controls.Add(this.buttonSaveToFile);
             this.tabLE.Controls.Add(this.listViewBlocks);
             this.tabLE.Location = new System.Drawing.Point(4, 22);
             this.tabLE.Name = "tabLE";
@@ -1349,6 +1351,16 @@
             this.tabLE.TabIndex = 3;
             this.tabLE.Text = "LE";
             this.tabLE.UseVisualStyleBackColor = true;
+            // 
+            // buttonSaveToFile
+            // 
+            this.buttonSaveToFile.Location = new System.Drawing.Point(6, 446);
+            this.buttonSaveToFile.Name = "buttonSaveToFile";
+            this.buttonSaveToFile.Size = new System.Drawing.Size(87, 23);
+            this.buttonSaveToFile.TabIndex = 3;
+            this.buttonSaveToFile.Text = "Save to File...";
+            this.buttonSaveToFile.UseVisualStyleBackColor = true;
+            this.buttonSaveToFile.Click += new System.EventHandler(this.buttonSaveToFile_Click);
             // 
             // listViewBlocks
             // 
@@ -1688,6 +1700,7 @@
             // 
             // chkJigg
             // 
+            this.chkJigg.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkJigg.AutoSize = true;
             this.chkJigg.Enabled = false;
             this.chkJigg.Location = new System.Drawing.Point(172, 454);
@@ -1700,6 +1713,7 @@
             // 
             // chkArti
             // 
+            this.chkArti.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkArti.AutoSize = true;
             this.chkArti.Enabled = false;
             this.chkArti.Location = new System.Drawing.Point(172, 472);
@@ -1712,6 +1726,7 @@
             // 
             // lblState
             // 
+            this.lblState.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblState.AutoSize = true;
             this.lblState.Location = new System.Drawing.Point(321, 423);
             this.lblState.Name = "lblState";
@@ -1752,7 +1767,7 @@
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.pnlGame);
             this.KeyPreview = true;
-            this.MinimumSize = new System.Drawing.Size(755, 535);
+            this.MinimumSize = new System.Drawing.Size(755, 534);
             this.Name = "Form1";
             this.Text = "PR2 Speedrun Tools v0.0.0";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
@@ -1910,6 +1925,7 @@
         private System.Windows.Forms.CheckBox chkJigg;
         private System.Windows.Forms.CheckBox chkArti;
         private System.Windows.Forms.Label lblState;
+        private System.Windows.Forms.Button buttonSaveToFile;
     }
 }
 

@@ -176,16 +176,22 @@ namespace PR2_Speedrun_Tools
             }
         }
 
+        /// <summary>
+        /// SANTA HACK: freezing blocks you stand on is delayed somehow (by 4ms?) so this hacky var
+        ///             makes santa behave as it should... hopefully.
+        /// </summary>
+        public bool SHOULD_FREEZE_NEXT_FRAME;
         public void Freeze()
         {
-            //if (!this.frozen) {
-            //    this.frozen = true;
-
-            //}
-            TurnedToIce = true;
-            WasIced = true;
-            FreezeTime = 36;
-            course.AddBlockEvent(this, Map.EVENT_THAW);
+            if (SHOULD_FREEZE_NEXT_FRAME) {
+                SHOULD_FREEZE_NEXT_FRAME = false;
+                TurnedToIce = true;
+                WasIced = true;
+                FreezeTime = 36;
+                course.AddBlockEvent(this, Map.EVENT_THAW);
+            } else {
+                SHOULD_FREEZE_NEXT_FRAME = true;
+            }
         }
 
         public void Move()
@@ -291,7 +297,7 @@ namespace PR2_Speedrun_Tools
 
 
         // Touch block
-        public void StandOn(LocalCharacter tChar)
+        public void onStand(LocalCharacter tChar)
         {
             int BlocX = X * 30;
             int BlocY = Y * 30;
@@ -301,7 +307,7 @@ namespace PR2_Speedrun_Tools
                 BlocY -= 30;
 
             // Santa Freeze  Can't freeze starts
-            if (!WasIced && tChar.SantaHat && !(T >= 11 && T <= 14))
+            if ((!WasIced && tChar.SantaHat && !(T >= 11 && T <= 14)))
             {
                 this.Freeze();
             }
@@ -586,6 +592,7 @@ namespace PR2_Speedrun_Tools
             else if (T == BlockID.Vanish)
                 Vanish();
         }
+
         public void HitRight(LocalCharacter tChar)
         {
             int BlocX = X * 30;
@@ -666,7 +673,8 @@ namespace PR2_Speedrun_Tools
                 }
                 else if (T == BlockID.Net)
                 {
-                    if (tChar.SafeSegX != X || Y > tChar.SafeSegY || Y + 2 < tChar.SafeSegY)
+                    //if (tChar.SafeSegX != X || Y > tChar.SafeSegY || Y + 2 < tChar.SafeSegY)
+                    if (tChar.SafeSegX != X || tChar.SafeSegY < Y || tChar.SafeSegY > Y + 2)
                         tChar.Reappear();
                 }
             }

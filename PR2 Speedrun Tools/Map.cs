@@ -104,6 +104,7 @@ namespace PR2_Speedrun_Tools
 
         private const bool DrawCrumbleHealth = true;
         private const bool DrawVanishTimers = true;
+        private const bool DrawFreezeTimers = true;
         private Font HealthFont = new Font(FontFamily.GenericSansSerif, 8.0f);
         private void DrawBlocks()
         {
@@ -167,6 +168,15 @@ namespace PR2_Speedrun_Tools
                     {
                         MG.DrawString(cBlock.FadeTime.ToString(), HealthFont, Brushes.White, dX + 4, dY + 6);
                         MG.DrawString(cBlock.FadeTime.ToString(), HealthFont, Brushes.Black, dX + 3, dY + 5);
+                    }
+                    if (DrawFreezeTimers) {
+                        if (cBlock.TurnedToIce) {
+                            MG.DrawString(cBlock.FreezeTime.ToString(), HealthFont, Brushes.Black, dX + 11, dY + 13);
+                        }
+                        else if (cBlock.FreezeTime > 0) {
+                            MG.DrawString(cBlock.FreezeTime.ToString(), HealthFont, Brushes.White, dX + 12, dY + 14);
+                            MG.DrawString(cBlock.FreezeTime.ToString(), HealthFont, Brushes.Black, dX + 11, dY + 13);
+                        }
                     }
 
                     dX += 30;
@@ -655,7 +665,7 @@ namespace PR2_Speedrun_Tools
             // Sounds
             if (General.HQ)
             {
-                if (Frames == 0 || Frames == 18 || Frames == 37)
+                if (Frames == 1 || Frames == 18 || Frames == 37)
                     General.PlaySound(General.sound_path + "sound 429 (ReadySound).wav");
                 else if (Frames == 55)
                     General.PlaySound(General.sound_path + "sound 428 (GoSound).wav");
@@ -1009,11 +1019,12 @@ namespace PR2_Speedrun_Tools
             do
             {
                 hats[i].VelY += 0.2;
-                if (hats[i].VelY > 5)
+                if (hats[i].VelY > 8)
                 {
-                    hats[i].VelY = 5;
+                    hats[i].VelY = 8;
                 }
                 hats[i].Y += (int)hats[i].VelY;
+
                 // check for blocks
                 Block Bloc = getBlock(hats[i].X, hats[i].Y, hats[i].rot, true);
                 if (Bloc.IsSolid())
@@ -1022,6 +1033,18 @@ namespace PR2_Speedrun_Tools
                         hats[i].Y = Bloc.Y * 30;
                     else if (hats[i].VelY < 0)
                         hats[i].VelY = 0;
+
+                    //int x = Bloc.X;
+                    //int y = Bloc.Y;
+                    //General.RotatePoint(ref x, ref y, hats[i].rot);
+                    //if (hats[i].VelY < 0) {
+                    //    hats[i].VelY *= -0.5;
+                    //    hats[i].Y = y + 31;
+                    //}
+                    //else {
+                    //    hats[i].VelY = 0;
+                    //    hats[i].Y = y;
+                    //}
                 }
                 // check for character
                 if (hatTouchingChar(hats[i], MainChar))
@@ -1037,17 +1060,21 @@ namespace PR2_Speedrun_Tools
             } while (i < hats.Count);
         }
 
-        private bool hatTouchingChar(Hat hat, Character tChar)
+        private bool hatTouchingChar(Hat hat, LocalCharacter tChar)
         {
-            if (hat.X - 20 < tChar.X + 11 && hat.X + 20 > tChar.X - 11)
-            {
-                if (hat.Y - 20 < tChar.Y && hat.Y + 20 > tChar.Y - 56)
-                {
+            if (hat.X - 20 < tChar.X + 11 && hat.X + 20 > tChar.X - 11) {
+                if (hat.Y - 20 < tChar.Y && hat.Y + 20 > tChar.Y - 56) {
                     return true;
                 }
             }
 
             return false;
+
+            //if (Math.Abs(tChar.X - hat.X) < 25 && tChar.Y > hat.Y - 5 
+            //    && (!tChar.crouching && tChar.Y < hat.Y + 65 || tChar.crouching && tChar.Y < hat.Y + 25)) {
+            //    return true;
+            //}
+            //return false;
         }
 
         public void MakeHat(int X, int Y, int ID, Color clr, int ServID, int rot)

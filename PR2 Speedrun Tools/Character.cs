@@ -560,7 +560,7 @@ namespace PR2_Speedrun_Tools
 		public new void goFrame()
 		{
 			// if this is the first frame, set initial stats
-			if (course.Frames == 0)
+			if (course.Frames == 1)
 			{
 				iSp = SpStat; iAc = AccStat; iJp = JumpStat;
 			}
@@ -572,7 +572,7 @@ namespace PR2_Speedrun_Tools
 			// This is for TAS only for now.
 
 			// Item timer
-			if (course.Frames == 0 && JumpHat)
+			if (course.Frames == 1 && JumpHat)
 			{
 				cItem = Item.SPEEDY;
 				ItemUses = 1;
@@ -1159,19 +1159,21 @@ namespace PR2_Speedrun_Tools
 
         private void testGround()
 		{
-			// Solid check (required because of TopHat)
-			if (bottomCenter.IsSolid() && midCenter.IsSolid(this) == false)
-			{
-				bottomCenter.StandOn(this);
+            // Solid check (required because of TopHat)
+            if (bottomCenter.IsSolid() && midCenter.IsSolid(this) == false)
+            {
+				bottomCenter.onStand(this);
 				setBlocks();
 				TouchingGround = true;
 			}
 			else
 				TouchingGround = false;
 		}
+
+        
 		private void TestBlocks()
 		{
-			Block _loc1_;
+			Block _loc1_ = null;
 			setBlocks();
 			testGround();
 			bool Frz = false;
@@ -1180,9 +1182,8 @@ namespace PR2_Speedrun_Tools
 				_loc1_ = course.getBlock((int)X, (int)Y, RotateFrom, true);
 				if (_loc1_.T == BlockID.Water && Mode != "water" || _loc1_.T == BlockID.Net)
 				{
-                    //_loc1_.StandOn(this);
                     if (!_loc1_.WasIced || _loc1_.TurnedToIce) {
-                        _loc1_.StandOn(this);
+                        _loc1_.onStand(this);
                         setBlocks();
                         if (!_loc1_.WasIced)
                             Frz = true;
@@ -1268,6 +1269,10 @@ namespace PR2_Speedrun_Tools
 				if ((_loc_1.T != 99))
 					_loc_1.onTouch(this);
 			}
+
+            // hacky shit
+            // santa freeze should happen as late as possible
+            if (_loc1_?.SHOULD_FREEZE_NEXT_FRAME == true) _loc1_.Freeze();
 		}
 		// Setting blocks
 		private void setBlocks()
@@ -1406,8 +1411,11 @@ namespace PR2_Speedrun_Tools
                     this.SetMode("hurt");
                 }
 
-                if (Hats.Length > 0)
-					Array.Resize(ref Hats, Hats.Length - 1);
+                if (Hats.Length > 0) {
+                    var hat = Hats[Hats.Length - 1];
+                    course.MakeHat((int)X, (int)Y - 50, hat.ID, hat.Color, hat.ServID, Rotation);
+                    Array.Resize(ref Hats, Hats.Length - 1);
+                }
 			}
 		}
 
@@ -1441,7 +1449,7 @@ namespace PR2_Speedrun_Tools
 				Str += Hats[i].ID + ";" + Hats[i].Color.ToArgb() + ";";
 			}
 			// More
-			Str += "," + finish_hit + "," + Name + "," + Invincible;
+			Str += "," + finish_hit + "," + Name + "," + Invincible + "," + State;
 
 			return Str;
 		}
@@ -1537,10 +1545,12 @@ namespace PR2_Speedrun_Tools
 				if (SS.Length > 52)
 				{
 					Name = SS[52];
-					if (SS.Length > 53)
-						Invincible = bool.Parse(SS[53]);
-					else
-						Invincible = false;
+                    if (SS.Length > 53) {
+                        Invincible = bool.Parse(SS[53]);
+                        State = SS[54];
+                    }
+                    else
+                        Invincible = false;
 				}
 				else
 					Name = "Player";
