@@ -13,16 +13,16 @@ namespace PR2_Speedrun_Tools
 
 		private double _X;
 		private double _Y;
-		public double X
-		{
-			get { return _X; }
-			set { _X = (int)(value * 20) / 20.0; }
-		}
-		public double Y
-		{
-			get { return _Y; }
-			set { _Y = (int)(value * 20) / 20.0; }
-		}
+        public double X
+        {
+	        get { return _X; }
+	        set { _X = (int)(value * 20) / 20.0; }
+        }
+        public double Y
+        {
+	        get { return _Y; }
+	        set { _Y = (int)(value * 20) / 20.0; }
+        }
 		public int lastX;
 		public int lastY;
 		public int sendFrame = 0;

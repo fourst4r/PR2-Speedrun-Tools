@@ -10,6 +10,7 @@ using System.Threading;
 using System.Security.Cryptography;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using Newtonsoft.Json;
 
 namespace PR2_Speedrun_Tools
 {
@@ -159,6 +160,7 @@ namespace PR2_Speedrun_Tools
 
 		private void DisplayInfos()
 		{
+            //Console.WriteLine($"{{{You.X}, {You.Y}}}");
             lblVelX.Text = "VelX: " + General.FormatNumber(Math.Round(You.velX, 2), 2);
 			lblVelY.Text = "VelY: " + General.FormatNumber(Math.Round(You.velY, 2), 2);
 			double X = Math.Round(You.X, 2);
@@ -819,19 +821,19 @@ namespace PR2_Speedrun_Tools
 		}
 
 		// Online level loading/searching
-		private class LevelInfo
-		{
-			public string Title;
-			public string User;
-			public string Note;
-			public bool HasPassword;
-			public int Version;
-			public int ID;
-			public double Rating;
-			public int PlayCount;
-			public int MinRank;
-			public string Type;
-		}
+		//private class LevelInfo
+		//{
+		//	public string Title;
+		//	public string User;
+		//	public string Note;
+		//	public bool HasPassword;
+		//	public int Version;
+		//	public int ID;
+		//	public double Rating;
+		//	public int PlayCount;
+		//	public int MinRank;
+		//	public string Type;
+		//}
 
 		private List<LevelInfo> Levels = new List<LevelInfo>();
 
@@ -847,7 +849,7 @@ namespace PR2_Speedrun_Tools
 
 		private void myLevelsButton_Click(object sender, EventArgs e)
 		{
-			string Lnk = "http://pr2hub.com/get_levels.php?random_num=0.1932&token=" + General.Settings.Tokens[General.Settings.SelectedUser] + "&count=9999";
+			string Lnk = "http://pr2hub.com/levels_get.php?random_num=0.1932&token=" + General.Settings.Tokens[General.Settings.SelectedUser] + "&count=9999";
 			string Lvls = LoadURL(Lnk);
 			if (Lvls.StartsWith("error"))
 			{
@@ -871,62 +873,32 @@ namespace PR2_Speedrun_Tools
 		private void DisplayLevels(string str)
 		{
 			Levels.Clear();
-			int i = -1;
-            while (str.Contains("=") && !str.StartsWith("hash="))
+
+			bool ok = true;
+			try
+			{
+				Levels = JsonConvert.DeserializeObject<SearchLevelsModel>(str).Levels.ToList();
+			}
+			catch
             {
-                string param = str.Substring(0, str.IndexOf("="));
-                string value = str.Substring(param.Length + 1, str.IndexOf("&") - param.Length - 1);
-                str = str.Substring(param.Length + value.Length + 2); // one for the =, one for the &
-                if (param.EndsWith((i + 1).ToString()))
-                {
-                    i++;
-                    Levels.Add(new LevelInfo());
-                }
-                param = param.Substring(0, param.Length - i.ToString().Length);
-                switch (param)
-                {
-                    case "levelID":
-                        Levels[i].ID = int.Parse(value);
-                        break;
-                    case "version":
-                        Levels[i].Version = int.Parse(value);
-                        break;
-                    case "title":
-                        Levels[i].Title = WebUtility.UrlDecode(value);
-                        break;
-                    case "rating":
-                        Levels[i].Rating = double.Parse(value.Replace(".", ","), System.Globalization.NumberStyles.Any);
-                        break;
-                    case "playCount":
-                        Levels[i].PlayCount = int.Parse(value);
-                        break;
-                    case "minLevel":
-                        Levels[i].MinRank = int.Parse(value);
-                        break;
-                    case "userName":
-                        Levels[i].User = WebUtility.UrlDecode(value);
-                        break;
-                    case "pass":
-                        Levels[i].HasPassword = value != "";
-                        break;
-                    case "type":
-                        Levels[i].Type = value;
-                        break;
-                    case "note":
-                        Levels[i].Note = WebUtility.UrlDecode(value);
-                        break;
-                }
+				ok = false;
             }
 
             // Display them
             levelsList.Items.Clear();
 			if (Levels.Count == 0)
 			{
-				levelsList.Items.Add("NO LEVELS");
-				levelsList.Items.Add("if loading your levels, verify your token");
+				if (ok)
+				{
+					levelsList.Items.Add("NO LEVELS");
+					levelsList.Items.Add("if loading your levels, verify your token");
+				}
+				else
+					levelsList.Items.Add("Error fetching levels");
+				
 				return;
 			}
-			for (i = 0; i < Levels.Count; i++)
+			for (int i = 0; i < Levels.Count; i++)
 			{
 				levelsList.Items.Add(Levels[i].Title);
 			}
@@ -938,15 +910,15 @@ namespace PR2_Speedrun_Tools
 				return;
 
 			int index = levelsList.SelectedIndex;
-			userLbl.Text = "Username: " + Levels[index].User;
+			userLbl.Text = "Username: " + Levels[index].UserName;
 			noteBox.Text = Levels[index].Note;
 			typeLbl.Text = "Type: " + Levels[index].Type;
 			versionLbl.Text = "Version: " + Levels[index].Version;
 			ratingLbl.Text = "Rating: " + Levels[index].Rating;
 			playsLbl.Text = "Plays: " + Levels[index].PlayCount;
-			minRankLbl.Text = "Min Rank: " + Levels[index].MinRank;
-			levelIDLbl.Text = "Level ID: " + Levels[index].ID;
-			hasPassLbl.Visible = Levels[index].HasPassword;
+			minRankLbl.Text = "Min Rank: " + Levels[index].MinLevel;
+			levelIDLbl.Text = "Level ID: " + Levels[index].LevelId;
+			hasPassLbl.Visible = Levels[index].Pass;
 
 			loadLevelBtn.Text = "Load Level";
 		}
@@ -973,7 +945,7 @@ namespace PR2_Speedrun_Tools
 			else
 			{
 				theMap.enterLE(); // Idk what happens if you try to load a level mid-game
-				data = LoadURL("http://pr2hub.com/levels/" + Levels[levelsList.SelectedIndex].ID + ".txt"
+				data = LoadURL("http://pr2hub.com/levels/" + Levels[levelsList.SelectedIndex].LevelId + ".txt"
 					+ "?version=" + Levels[levelsList.SelectedIndex].Version);
 				//data = LoadURL("http://pr2hub.com/levels/" + 6413759 + ".txt");
 				theMap.LoadLevel(data);
