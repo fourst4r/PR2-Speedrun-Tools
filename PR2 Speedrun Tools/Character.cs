@@ -36,6 +36,7 @@ namespace PR2_Speedrun_Tools
 		public int ScaleX = 1;
 		public int Rotation = 0;
 		public int RotateFrom = 0;
+		public int RotateTo;
 
 		public Hat[] Hats = new Hat[0];
 		public int cItem = 0;
@@ -72,10 +73,13 @@ namespace PR2_Speedrun_Tools
         public string State;
         protected bool isAprilFools;
 
+		protected int var_448 = 5;
+
         public Character()
         {
             method_11("stand");
-        }
+			
+		}
 
 		public void Reset(bool stats = true)
 		{
@@ -96,11 +100,17 @@ namespace PR2_Speedrun_Tools
 			// Hats
 			Hats = new Hat[] { };
 		}
-		public void goFrame()
+		public virtual void goFrame()
 		{
+			throw new NotImplementedException();
 			X += velX;
 			Y += velY;
 		}
+
+		public virtual void drawSelf(Graphics MG, int DX, int DY)
+        {
+			throw new NotImplementedException();
+        }
 
         // method_51
         public void BeginRecovery(double time)
@@ -152,6 +162,406 @@ namespace PR2_Speedrun_Tools
                 // TODO: some other shit
             }
         }
+
+	}
+
+	public class RemoteCharacter : Character
+    {
+		struct PointD
+        {
+			public double x;
+			public double y;
+			//public PointD() { }
+			public PointD(double x, double y)
+            {
+				this.x = x;
+				this.y = y;
+            }
+        }
+		class idk
+        {
+			public double? x;
+			public double y;
+			public PointD? pos;
+			public int? scaleX;
+			public object parent;
+			public string state;
+			public int? rotMod;
+			public int? rot;
+			public int? item;
+			public int? jet;
+			public object sparkle;
+			public object beginRemove;
+		}
+		private List<idk> var_19;
+		private double var_180 = 1;
+		// why do these exist...
+		private double posX;
+		private double posY;
+		private int rot;
+		private int rotMod;
+		private int rotation;
+		private new double lastX;
+		private new double lastY;
+
+		public RemoteCharacter()
+		{
+			parts = new AnimatedPart[] { foot1, foot2, body, head }.ToList();
+			foot1.rotCenter = new PointF(0, -15);
+			foot1.SetPos(-6, -8);
+			foot2.rotCenter = new PointF(0, -15);
+			foot2.SetPos(-9, -8);
+			body.rotCenter = new PointF(0, -5);
+			body.SetPos(-9, -33);
+			head.rotCenter = new PointF(0, -5);
+			head.SetPos(-11, -60);
+
+			var_19 = new List<idk>();
+			var_180 = var_448 + 1;
+		}
+
+		public override void goFrame()
+        {
+			if (this.var_19.Count > 0)
+			{
+				this.var_180 = this.var_180 - 0.01;
+				int _loc4_ = 0;
+				while (_loc4_ < this.var_19.Count)
+				{
+					var _loc3_ = this.var_19[_loc4_];
+					if (_loc3_.pos != null)
+					{
+						var _loc6_ = _loc3_.pos.Value;
+						var _loc7_ = _loc6_.x / (_loc4_ + 1);
+						var _loc8_ = _loc6_.y / (_loc4_ + 1);
+						this.posX = this.posX + _loc7_;
+						this.posY = this.posY + _loc8_;
+						_loc6_.x = (_loc6_.x - _loc7_);
+						_loc6_.y = (_loc6_.y - _loc8_);
+						break;
+					}
+					_loc4_++;
+				}
+				velX = this.lastX - X;
+				velY = this.lastY - Y;
+				this.lastX = X;
+				this.lastY = Y;
+				// FIX IF PROBLEM ROTATING
+				//var _loc5_ = class_28.method_9(this.posX, this.posY, -(this.map.rotation + this.rot));
+				X = this.posX; /* TEMP FIX _loc5_.x;*/
+				Y = this.posY; /* TEMP FIX _loc5_.y;*/
+                //_loc5_ = class_28.method_9(this.posX, this.posY, -this.rot);
+                //this.mapDot.x = _loc5_.x;
+                //this.mapDot.y = _loc5_.y;
+                //method_58(this.map.rotation);
+                //rotation = this.map.rotation + this.rot + this.rotMod;
+                idk _loc2_ = var_19[0];
+                var_19.RemoveAt(0);//this.var_19.shift();
+				if (_loc2_.state != null)
+				{
+					State = _loc2_.state;//changeState(_loc2_.state);
+				}
+				if (_loc2_.scaleX != null)
+				{
+					ScaleX = _loc2_.scaleX.Value;//this.setScaleX(int(_loc2_.scaleX));
+				}
+				if (_loc2_.parent != null)
+				{
+					//if (Course.course[_loc2_.parent] != null)
+					//{
+					//	Sprite(Course.course[_loc2_.parent]).addChild(this);
+					//}
+				}
+				if (_loc2_.x != null)
+				{
+					this.posX = _loc2_.x.Value;
+					this.posY = _loc2_.y;
+				}
+				if (_loc2_.rotMod != null)
+				{
+					this.rotMod = (_loc2_.rotMod.Value);
+				}
+				if (_loc2_.rot != null)
+				{
+					this.rot = _loc2_.rot.Value;
+				}
+				if (_loc2_.item != null)
+				{
+					//setItem(_loc2_.item);
+				}
+				if (_loc2_.sparkle != null)
+				{
+					//if (_loc2_.sparkle == "1")
+					//{
+					//	beginSparkles();
+					//}
+					//else
+					//{
+					//	endSparkles();
+					//}
+				}
+				if (_loc2_.jet != null)
+				{
+					//if (_loc2_.jet == "1")
+					//{
+					//	beginJet();
+					//}
+					//else
+					//{
+					//	endJet();
+					//}
+				}
+				if (_loc2_.beginRemove != null)
+				{
+					//beginRemove();
+				}
+				if (this.var_19.Count > this.var_180)
+				{
+                    goFrame();//this.go(new Event(Event.ENTER_FRAME));
+                }
+			}
+			else
+			{
+				this.var_180 = this.var_180 + 0.08;
+			}
+			if (this.var_180 > 10)
+			{
+				this.var_180 = 10;
+			}
+			//this.method_76();
+
+			
+		}
+
+		public void pos(string[] param1)
+        {
+			PointD? _loc2_ = null;
+			if (param1[0] == "")
+			{
+				_loc2_ = new PointD(0, 0);
+			}
+			else
+			{
+				_loc2_ = new PointD(Convert.ToDouble(param1[0]), Convert.ToDouble(param1[1]));
+			}
+			int _loc3_ = 1;
+			while (_loc3_ < var_448)
+			{
+				this.var_19.Add(new idk());
+				_loc3_++;
+			}
+			var _loc4_ = new idk();
+			_loc4_.pos = _loc2_;
+			this.var_19.Add(_loc4_);
+		}
+
+		public void exactPos(string[] param1)
+        {
+			int _loc2_ = Convert.ToInt32(param1[0]);
+			int _loc3_= Convert.ToInt32(param1[1]);
+			if (this.var_19.Count > 0)
+			{
+				this.var_19[this.var_19.Count - 1].x = _loc2_;
+				this.var_19[this.var_19.Count - 1].y = _loc3_;
+			}
+		} 
+
+		private Matrix fMatrix = new Matrix();
+		private float fRot = 0;
+		private int fRev = _fRev; const int _fRev = 12;
+		private float standRot = 0;
+		public override void drawSelf(Graphics MG, int DX, int DY)
+		{
+			GraphicsState gSave = MG.Save();
+
+			MG.SmoothingMode = SmoothingMode.AntiAlias;
+			bool crouching = State == "crouchWalk" || State == "crouch";
+
+			// Default matrix (before part specific changes)
+			fMatrix = new Matrix();
+			if (ScaleX < 0)
+			{
+				fMatrix.Scale(-1, 1);
+				fMatrix.Translate(-DX * 2, 0);
+			}
+
+			if (State == "superJump")
+			{
+				// TODO: fake the sj animation
+				float yScale = 1 - (/*SuperJumpVel*/100 / 300.0f);
+				fMatrix.Translate(0, DY - (yScale * DY));
+				fMatrix.Scale(1, yScale);
+			}
+			else if (!crouching)
+			{
+				if (State == "run")
+					fMatrix.RotateAt(-8, new PointF(DX, DY - 5));
+				else if (State == "jump")
+					fMatrix.RotateAt(-10, new PointF(DX, DY - 5));
+				else if (State == "swim")
+					fMatrix.RotateAt(-1, new PointF(DX, DY - 5));
+			}
+			// Idle anim
+			fMatrix.RotateAt(standRot * 1.5f, new PointF(DX + 5, DY));
+			fMatrix.RotateAt(-standRot, new PointF(DX + 5, DY - 10));
+
+
+			MG.Transform = fMatrix;
+			// BODY (should this be first, for crouching?)
+			int bH = crouching ? 23 : 33;
+			MG.DrawImage(General.BodyC, DX - 9, DY - bH);
+			MG.DrawImage(General.Body, DX - 9, DY - bH);
+
+			// HEAD
+			bH = crouching ? 40 : 60;
+			// bH -= (int)((fRot + 45) / 45);
+			MG.DrawImage(General.HeadC, DX - 11, DY - bH);
+			MG.DrawImage(General.Head, DX - 11, DY - bH);
+
+			// HATS
+			bH = crouching ? 24 : 44;
+			Point HatPos = new Point(0, 0);
+			for (int i2 = 0; i2 < Hats.Length; i2++)
+			{
+				Bitmap iHat = General.Hatpic[Hats[i2].ID].Bit;
+				HatPos = new Point(0, 0);
+				switch (Hats[i2].ID)
+				{
+				case Hat.ID_COWBOY:
+					HatPos = new Point(1, -1);
+					break;
+				case Hat.ID_SANTA:
+					HatPos = new Point(-1, -1);
+					break;
+				}
+				MG.DrawImage(iHat, DX - 18 + HatPos.X, DY - bH - iHat.Height - (8 * i2) + HatPos.Y);
+			}
+
+			// Idle anim
+			Matrix nMatrix = fMatrix.Clone();
+			nMatrix.RotateAt(standRot * 2, new PointF(DX + 5, DY));
+			// And yOffset
+			float fY = 0;
+			if (crouching)
+				fY += fRot / 28.0f;
+			// FEET
+			PointF fRotPointH = new PointF(0, 22);
+			float sRot = 0;
+			if (/*!TouchingGround &&*/ State == "swim"/*Mode == "water"*/)
+			{
+				fRotPointH = new PointF(-5, 8);
+				sRot = 20;
+				//nMatrix.RotateAt(20, new PointF(DX , DY));
+				nMatrix.Translate(2, 0);
+			}
+			MG.Transform = nMatrix;
+			if (!crouching)
+			{
+				MG.TranslateTransform(DX - 0 + fRotPointH.X, DY - fRotPointH.Y);
+				MG.RotateTransform(-fRot + sRot);
+				MG.TranslateTransform(-DX + 0 - fRotPointH.X, -DY + fRotPointH.Y);
+			}
+			MG.DrawImage(General.FeetC, DX - 7, DY - 8 + fY);
+			MG.DrawImage(General.Feet, DX - 7, DY - 8 + fY);
+
+			MG.Transform = nMatrix;
+			if (!crouching)
+			{
+				MG.TranslateTransform(DX - 3 + fRotPointH.X, DY - fRotPointH.Y);
+				MG.RotateTransform(fRot + sRot);
+				MG.TranslateTransform(-DX + 3 - fRotPointH.X, -DY + fRotPointH.Y);
+			}
+			MG.DrawImage(General.FeetC, DX - 10, DY - 8 - fY);
+			MG.DrawImage(General.Feet, DX - 10, DY - 8 - fY);
+
+			nMatrix.Dispose();
+			MG.Transform = fMatrix;
+			// ITEM
+			if (cItem != 0)
+			{
+				Bitmap img = General.ItemB[cItem].Bit;
+				bH = crouching ? 21 : 31;
+				if (cItem == Item.JETPACK)
+					MG.DrawImage(img, DX - 21, DY - bH, img.Width, img.Height);
+				//else if (cItem == Item.SWORD)
+				//	Sword and laser gun(?) need to be drawn differently.
+				else
+					MG.DrawImage(img, DX + 5, DY - bH, (int)(img.Width * 0.5), (int)(img.Height * 0.5));
+				img.Dispose();
+				// Animations
+				if (cItem == Item.JETPACK /*&& SpaceK*/)
+				{
+					MG.DrawImage(General.jetPic.Bit, DX - 31, DY - bH + 15);
+				}
+				else if (cItem == Item.SPEEDY /*&& ItemTime > 0 && ItemTime % 3 == 1*/)
+					course.AddSparkle((int)X + General.R.Next(-17, 12), (int)Y - General.R.Next(50));
+			}
+
+			//GraphicsState gSave = MG.Save();
+			//MG.SmoothingMode = SmoothingMode.AntiAlias;
+
+			//for (int i = 0; i < parts.Count; i++)
+			//    parts[i].Draw(MG, DX, DY);
+
+			MG.Restore(gSave);
+		}
+
+		private AnimatedPart foot1 = new AnimatedPart(General.Feet, General.FeetC);
+		private AnimatedPart foot2 = new AnimatedPart(General.Feet, General.FeetC);
+		private AnimatedPart body = new AnimatedPart(General.Body, General.BodyC);
+		private AnimatedPart head = new AnimatedPart(General.Head, General.HeadC);
+		private List<AnimatedPart> parts;
+
+		private bool wasTouchingGround = false;
+		private float standTar; const float _sTar = 5;
+		public void animate()
+		{
+			// Feet rotations
+			if (State == "swim")
+			{
+				if (fRot > 25)
+					fRot = 24.9f;
+				else if (fRot < -25)
+					fRot = -24.9f;
+				fRot += fRev * 0.4f;
+				if (Math.Abs(fRot) > 25)
+					fRev *= -1;
+				wasTouchingGround = false;
+			}
+			else if (State == "jump")
+			{
+				if (fRot < 0)
+					fRot *= -1;
+				fRot += ((42.0f - fRot) * 0.2f);
+				fRev = -_fRev;
+				wasTouchingGround = false;
+			}
+			else
+			{
+				if (!wasTouchingGround)
+				{ wasTouchingGround = true; fRot = 10; }
+				if (State == "run" || State == "crouchWalk"/*(LeftK || RightK)*/ && SuperJumpVel < 25)
+				{
+					fRot += fRev;
+					if (Math.Abs(fRot) > 45)
+						fRev *= -1;
+				}
+				else // Idle
+				{
+					fRot = 0; fRev = _fRev;
+					if (State != "crouch" && State != "crouchWalk")
+					{
+						standRot += (standTar - standRot) / 10;
+						if ((standTar != 0 && standRot > standTar - 0.7) || standRot < 0.7)
+							standTar = _sTar - standTar;
+					}
+				}
+			}
+
+			if (fRot != 0)
+				standRot = 0;
+		}
+	
     }
 
 	public class LocalCharacter : Character
@@ -171,7 +581,7 @@ namespace PR2_Speedrun_Tools
 
 		#region "Graphics"
 		private Matrix fMatrix = new Matrix();
-		public void drawSelf(Graphics MG, int DX, int DY)
+		public override void drawSelf(Graphics MG, int DX, int DY)
 		{
 			GraphicsState gSave = MG.Save();
 
@@ -379,7 +789,7 @@ namespace PR2_Speedrun_Tools
 		public int SafeSegY;
 
 		// Gravity
-		public int RotateTo = 0;
+		//public int RotateTo = 0;
 
 		// Stats
 		public double Speed = 0;

@@ -381,6 +381,39 @@ namespace PR2_Speedrun_Tools
             }
         }
 
+        public void RemoteActivate(string data)
+        {
+            switch (T)
+            {
+            case BlockID.Brick:
+            case BlockID.Mine:
+                course.DeleteBlock(X, Y);
+                break;
+            case BlockID.Crumble:
+                Health -= Convert.ToInt32(data) / 4;
+                if (Health <= 0)
+                {
+                    T = 99;
+                    course.DeleteBlock(X, Y);
+                }
+                break;
+            case BlockID.Push:
+                if (data == "down")
+                    course.PushBlock(this, 0, 1);
+                else if (data == "up")
+                    course.PushBlock(this, 0, -1);
+                else if (data == "right")
+                    course.PushBlock(this, 1, 0);
+                else if (data == "left")
+                    course.PushBlock(this, -1, 0);
+                //GetPushed(0, -1, tChar);
+                break;
+            case BlockID.Vanish:
+                Vanish();
+                break;
+            }
+        }
+
         public void Bump(LocalCharacter tChar)
         {
             int BlocX = X * 30;

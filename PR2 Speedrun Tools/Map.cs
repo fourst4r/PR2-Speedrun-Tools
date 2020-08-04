@@ -188,22 +188,23 @@ namespace PR2_Speedrun_Tools
 
         private void DrawCharacters()
         {
-            foreach (LocalCharacter c in Chars)
+            foreach (Character c in Chars)
                 DrawCharacter(c);
         }
 
-        public void DrawCharacter(LocalCharacter c)
+        public void DrawCharacter(Character c)
         {
+            bool local = c is LocalCharacter;
             Color YouColor = Color.Green;
             int YH = 55;
-            if (c.crouching)
+            if (local && ((LocalCharacter)c).crouching)
                 YH = 40;
             if (c.SuperJumpVel > 25)
             {
                 YouColor = Color.Yellow;
                 YH = 55 - (int)((c.SuperJumpVel / 100.0) * 15);
             }
-            if (c.HurtTimer > 0)
+            if (local && ((LocalCharacter)c).HurtTimer > 0)
                 YouColor = Color.Red;
 
             int relativeRotation;
@@ -624,6 +625,8 @@ namespace PR2_Speedrun_Tools
             }
         }
 
+        //public void RemoveCharacter(Charac)
+
         // Frame
         public int Frames = 0;
         public void goFrame()
@@ -637,13 +640,22 @@ namespace PR2_Speedrun_Tools
             // All characters go
             for (int i = 0; i < Chars.Count; i++)
             {
-                if (Chars[i].GetType() == typeof(LocalCharacter))
+                if (Chars[i] is LocalCharacter lc)
+                    lc.goFrame();
+                else if (Chars[i] is RemoteCharacter rc)
                 {
-                    LocalCharacter c = Chars[i] as LocalCharacter;
-                    c.goFrame();
+                    rc.goFrame();
+                    rc.animate();
                 }
                 else
                     Chars[i].goFrame();
+                //if (Chars[i].GetType() == typeof(LocalCharacter))
+                //{
+                //    LocalCharacter c = Chars[i] as LocalCharacter;
+                //    c.goFrame();
+                //}
+                //else
+                //    Chars[i].goFrame();
             }
             // Handle: Move Blocks, Lasers, Slashes, Hats, Bomb placement
             // Move blocks

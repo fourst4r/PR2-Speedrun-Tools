@@ -820,21 +820,6 @@ namespace PR2_Speedrun_Tools
 			game.ClearGhosts();
 		}
 
-		// Online level loading/searching
-		//private class LevelInfo
-		//{
-		//	public string Title;
-		//	public string User;
-		//	public string Note;
-		//	public bool HasPassword;
-		//	public int Version;
-		//	public int ID;
-		//	public double Rating;
-		//	public int PlayCount;
-		//	public int MinRank;
-		//	public string Type;
-		//}
-
 		private List<LevelInfo> Levels = new List<LevelInfo>();
 
 		private void searchBtn_Click(object sender, EventArgs e)
@@ -1196,5 +1181,18 @@ namespace PR2_Speedrun_Tools
                 }
             }
         }
+
+        private void buttonLoadRace_Click(object sender, EventArgs e)
+        {
+			string filename;
+			using (var ofd = new OpenFileDialog())
+            {
+				var res = ofd.ShowDialog();
+				if (res != DialogResult.OK) return;
+				filename = ofd.FileName;
+            }
+			var lines = File.ReadAllLines(filename);
+			game.PlayReplay(new Replay(lines, true));
+		}
     }
 }

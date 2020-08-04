@@ -27,11 +27,11 @@ namespace PR2_Speedrun_Tools
 		}
         #endregion
 
-        private Sprite _sprite;
+        //private Sprite _sprite;
 
 		public Game_ART(int displayWidth = 540, int displayHeight = 405)
 		{
-            _sprite = new Sprite(General.ZapPic.Bit);
+            //_sprite = new Sprite(General.ZapPic.Bit);
 			img = new Bitsmap(displayWidth, displayHeight);
 			MG = Graphics.FromImage(img.Bit);
 
@@ -180,12 +180,37 @@ namespace PR2_Speedrun_Tools
 		}
 		#endregion
 
+		public bool PlayingReplay;
+		public Replay Replay;
+
+		#region Replay
+		public void PlayReplay(Replay replay)
+		{
+			Players.Clear(); // the replay will create its own characters
+			map.Chars.Clear();
+			Replay = replay;
+			PlayingReplay = true;
+		}
+
+		public void StopReplay()
+		{
+			PlayingReplay = false;
+		}
+		#endregion
+
 		private void goFrame()
 		{
 			InvokeEvent(beginFrame);
 			// If first frame, set recording's SaveState
 			// Recording/Playing
-			if (playingRec)
+			if (PlayingReplay)
+            {
+                map.Gravity = 0;
+                int n = Replay.PendingUpdates(map.Frames, (int)targetFPS);
+				Console.WriteLine($"{n} pending updates");
+				Replay.ProcessUpdates(this, n);
+            }
+			else if (playingRec)
 				UseInputRec();
 			else
 				RecordInput();
@@ -265,6 +290,13 @@ namespace PR2_Speedrun_Tools
 			recording.channels.Add(new RecordedChannel());
 			recording.channels.Last().SetEndPoint(RecFrame);
 		}
+
+		public void AddRemotePlayer()
+        {
+			var c = new RemoteCharacter();
+			c.course = map;
+			map.AddCharacter(c);
+        }
 
 		public void AddGhost(Recording rec)
 		{

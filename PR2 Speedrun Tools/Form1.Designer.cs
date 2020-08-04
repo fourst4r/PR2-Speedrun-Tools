@@ -184,6 +184,7 @@
             this.chkJigg = new System.Windows.Forms.CheckBox();
             this.chkArti = new System.Windows.Forms.CheckBox();
             this.lblState = new System.Windows.Forms.Label();
+            this.buttonLoadRace = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabLevels.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pageNum)).BeginInit();
@@ -881,6 +882,7 @@
             // 
             // tabGameControls
             // 
+            this.tabGameControls.Controls.Add(this.buttonLoadRace);
             this.tabGameControls.Controls.Add(this.tournamentBth);
             this.tabGameControls.Controls.Add(this.lblRecStatus);
             this.tabGameControls.Controls.Add(this.lblPlayers);
@@ -1734,6 +1736,16 @@
             this.lblState.TabIndex = 31;
             this.lblState.Text = "State: stand";
             // 
+            // buttonLoadRace
+            // 
+            this.buttonLoadRace.Location = new System.Drawing.Point(114, 6);
+            this.buttonLoadRace.Name = "buttonLoadRace";
+            this.buttonLoadRace.Size = new System.Drawing.Size(75, 23);
+            this.buttonLoadRace.TabIndex = 28;
+            this.buttonLoadRace.Text = "Load Race";
+            this.buttonLoadRace.UseVisualStyleBackColor = true;
+            this.buttonLoadRace.Click += new System.EventHandler(this.buttonLoadRace_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1926,6 +1938,7 @@
         private System.Windows.Forms.CheckBox chkArti;
         private System.Windows.Forms.Label lblState;
         private System.Windows.Forms.Button buttonSaveToFile;
+        private System.Windows.Forms.Button buttonLoadRace;
     }
 }
 
