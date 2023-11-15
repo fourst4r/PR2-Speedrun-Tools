@@ -1594,7 +1594,7 @@ namespace PR2_Speedrun_Tools
 				{
                     if (!_loc1_.WasIced || _loc1_.TurnedToIce) {
                         _loc1_.onStand(this);
-                        setBlocks();
+                        setBlocks(); // <-- this is not in PR2, deleting it might fix the santa bug (15/11/23)
                         if (!_loc1_.WasIced)
                             Frz = true;
                     }
